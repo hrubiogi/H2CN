@@ -51,8 +51,6 @@ public class GestionOS
     void itemHandler()
 
 
-
-
     {
         boolean salir = false;
         char opcio;
