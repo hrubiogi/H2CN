@@ -1,5 +1,6 @@
+package model;
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Order
 {
@@ -86,7 +87,7 @@ public class Order
     @Override
     public String toString()
     {
-        return "Order{" +
+        return "model.Order{" +
                 "id=" + id +
                 ", customer=" + customer +
                 ", item=" + item +

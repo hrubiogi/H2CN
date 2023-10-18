@@ -1,3 +1,5 @@
+package model;
+
 public class StandardCustomer extends Customer
 {
     public StandardCustomer(String name, String address, String nif, String email)

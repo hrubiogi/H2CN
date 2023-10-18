@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+package model;
 
 public class CustomersList extends List<Customer>
 {

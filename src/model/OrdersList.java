@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+package model;
 
 public class OrdersList extends List<Order>
 {

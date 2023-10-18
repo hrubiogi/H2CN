@@ -1,3 +1,5 @@
+package model;
+
 public abstract class Customer
 {
     private String name;
@@ -64,7 +66,7 @@ public abstract class Customer
     @Override
     public String toString()
     {
-        return "Customer{" +
+        return "model.Customer{" +
                 "name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", nif='" + nif + '\'' +

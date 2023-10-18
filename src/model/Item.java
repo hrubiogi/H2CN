@@ -1,3 +1,5 @@
+package model;
+
 public class Item
 {
     private String code;
@@ -70,7 +72,7 @@ public class Item
     @Override
     public String toString()
     {
-        return "Item{" +
+        return "model.Item{" +
                 "code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +

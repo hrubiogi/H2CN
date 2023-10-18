@@ -1,4 +1,5 @@
-
+package view;
+import controller.Controller;
 import java.util.Scanner;
 
 public class GestionOS

@@ -1,3 +1,5 @@
+package model;
+
 public class PremiumCustomer extends Customer
 {
     private static final float ShippingDisc = 0.2F;
