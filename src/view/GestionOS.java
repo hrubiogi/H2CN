@@ -74,10 +74,10 @@ public class GestionOS
                     float shippingCost = Float.parseFloat(teclado.nextLine());
                     System.out.print("Introduce el tiempo de preparación: ");
                     int prepTime = Integer.parseInt(teclado.nextLine());
-                    controller.getData().saveItem(code, description, price, shippingCost, prepTime);
+                    controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
                     break;
                 case '2':
-                    controller.getData().getItems();
+                    controller.getData().getItemsList().getItems();
                     break;
                 case '0':
                     salir = true;
