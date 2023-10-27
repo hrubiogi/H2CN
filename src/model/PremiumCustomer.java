@@ -24,21 +24,21 @@ public class PremiumCustomer extends Customer
     @Override
     public String customerType()
     {
-        return null;
+        return "P";
         //TBD
     }
 
     @Override
     public float yearCalc()
     {
-        return 0;
+        return YearMemb;
         //TBD
     }
 
     @Override
     public float shippingDisc()
     {
-        return 0;
+        return ShippingDisc;
         //TBD
     }
 

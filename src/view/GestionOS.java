@@ -128,7 +128,7 @@ public class GestionOS
         String input;
         char validatedInput;
 
-        if (selectedManagement == 1) {
+        if (selectedManagement == '1') {
             System.out.println("¿Qué acción quiere tomar?");
             System.out.println("1. Añadir artículo");
             System.out.println("2. Mostrar artículo");
@@ -141,7 +141,7 @@ public class GestionOS
             validatedInput = validateInput(input, availableActions);
 
             return validatedInput;
-        } else if (selectedManagement == 2) {
+        } else if (selectedManagement == '2') {
             System.out.println("¿Qué acción quiere tomar?");
             System.out.println("1. Añadir cliente");
             System.out.println("2. Mostrar todos los clientes");
@@ -208,10 +208,11 @@ public class GestionOS
         String address = askField("Introduzca dirección del cliente: ");
         String nif = askField("Introduzca nif del cliente: ");
         String email = askField("Introduzca email del cliente: ");
-        Integer isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium: "));
+        int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium: "));
 
         if (isPremium != 1) {
             controller.getData().getCustomersList().saveCustomer(name, address, nif, email, false);
+
         } else {
             controller.getData().getCustomersList().saveCustomer(name, address, nif, email, true);
         }

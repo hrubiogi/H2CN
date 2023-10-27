@@ -9,7 +9,7 @@ public class StandardCustomer extends Customer
 
     @Override
     public String customerType() {
-        return null;
+        return "S";
         //TBD
     }
 

@@ -47,9 +47,5 @@ public class List<T>
         return true;
         // TO-BE-DONE
     }
-    //public ArrayList<T> getArrayList()
-    {
-       // ArrayList<T> arrlist = new ArrayList<>(list);
-       // return arrlist;
-    }
+
 }
