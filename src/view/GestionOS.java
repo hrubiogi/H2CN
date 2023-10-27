@@ -57,7 +57,7 @@ public class GestionOS
 
                     switch (action) {
                         case '1':
-                            addCustomerHandler();
+                            addCustomerHandler(null);
                             break;
                         case '2':
                             controller.getData().getCustomersList().getCustomers();
@@ -203,12 +203,18 @@ public class GestionOS
         controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
     }
 
-    void addCustomerHandler () {
+    void addCustomerHandler (String emailInput) {
         String name = askField("Introduzca nombre del cliente: ");
         String address = askField("Introduzca dirección del cliente: ");
         String nif = askField("Introduzca nif del cliente: ");
-        String email = askField("Introduzca email del cliente: ");
-        int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium: "));
+        String email;
+        if(emailInput == null){
+            email = askField("Introduzca email del cliente: ");
+        }else{
+            email = emailInput;
+        }
+
+        int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
 
         if (isPremium != 1) {
             controller.getData().getCustomersList().saveCustomer(name, address, nif, email, false);
@@ -221,11 +227,11 @@ public class GestionOS
 
     void addOrderHandler () {
         String email = askField("Introduzca email del cliente relacionado al pedido: ");
-        Customer customer = controller.getData().getCustomerByEmail(email);
+        Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
 
         if (customer == null) {
-            addCustomerHandler();
-            customer = controller.getData().getCustomerByEmail(email);
+            addCustomerHandler(email);
+            customer = controller.getData().getCustomersList().getCustomerByEmail(email);
         }
 
         String code = askField("Introduzca código del artículo relacionado al pedido: ");
@@ -236,15 +242,14 @@ public class GestionOS
             item = controller.getData().getItemsList().getItemByCode(code);
         }
 
-        long id = Math.round(Math.floor(Math.random() *(100000 - 0 + 1) + 0));
         int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
         Date date = new Date();
-
-        controller.getData().getOrdersList().saveOrder(id, customer, item, quantity, date);
+        long id = Math.round(Math.floor(Math.random() *(100000 - 0 + 1) + 0));
+        controller.getData().getOrdersList().saveOrder(customer, item, quantity);
     }
 
     void deleteOrderHandler() {
-        long id = Long.parseLong(askField("Introduzca número de identificación del pedido a eliminar: "));
+        String id = askField("Introduzca número de identificación del pedido a eliminar: ");
         controller.getData().getOrdersList().deleteOrder(id);
     }
 }

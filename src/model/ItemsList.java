@@ -21,4 +21,13 @@ public class ItemsList extends List<Item>
         System.out.println("LISTA DE PRODUCTOS: \n");
         System.out.println(getList() + "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n");
     }
+    public Item getItemByCode(String code){
+        for (Item item : getList()){
+            if (item.getCode().equals(code))
+            {
+                return item;
+            }
+        }
+        return null;
+    }
 }

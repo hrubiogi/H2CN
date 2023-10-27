@@ -68,4 +68,13 @@ public class CustomersList extends List<Customer>
         }
 
     }
+
+    public Customer getCustomerByEmail(String email){
+        for(Customer customer: getList()){
+            if(customer.getEmail().equalsIgnoreCase(email)){
+                return customer;
+            }
+        }
+        return null;
+    }
 }
