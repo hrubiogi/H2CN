@@ -85,10 +85,10 @@ public class GestionOS
                             addOrderHandler();
                             break;
                         case '2':
-                            controller.getData().getOrdersList().getPendingOrders();
+                            showPendingOrdersHandler();
                             break;
                         case '3':
-                            controller.getData().getOrdersList().getSentOrders();
+                            showSentOrdersHandler();
                             break;
                         case '4':
                             deleteOrderHandler();
@@ -251,6 +251,34 @@ public class GestionOS
     void deleteOrderHandler() {
         String id = askField("Introduzca número de identificación del pedido a eliminar: ");
         controller.getData().getOrdersList().deleteOrder(id);
+    }
+
+    void showPendingOrdersHandler() {
+        String input;
+
+        System.out.println("Introduzca el correo del cliente para mostrar sus pedidos pendientes o 0 para mostrarlos todos");
+        input = keyboard.nextLine();
+
+        if (input == "0") {
+            controller.getData().getOrdersList().getPendingOrders();
+        } else {
+            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
+            controller.getData().getOrdersList().getPendingOrdersByCustomer(customer);
+        }
+    }
+
+    void showSentOrdersHandler() {
+        String input;
+
+        System.out.println("Introduzca el correo del cliente para mostrar sus pedidos enviados o 0 para mostrarlos todos");
+        input = keyboard.nextLine();
+
+        if (input == "0") {
+            controller.getData().getOrdersList().getSentOrders();
+        } else {
+            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
+            controller.getData().getOrdersList().getSentOrdersByCustomer(customer);
+        }
     }
 }
 
