@@ -1,9 +1,18 @@
-public abstract class Customer
-{
+package model;
+
+public abstract class Customer {
     private String name;
     private String address;
     private String nif;
     private String email;
+
+    public Customer(String name, String address, String nif, String email)
+    {
+        this.name = name;
+        this.address = address;
+        this.nif = nif;
+        this.email = email;
+    }
 
     public String getName()
     {
@@ -45,14 +54,6 @@ public abstract class Customer
         this.email = email;
     }
 
-    public Customer(String name, String address, String nif, String email)
-    {
-        this.name = name;
-        this.address = address;
-        this.nif = nif;
-        this.email = email;
-    }
-
     public abstract String customerType ();
 
     public abstract float yearCalc();
@@ -64,11 +65,11 @@ public abstract class Customer
     @Override
     public String toString()
     {
-        return "Customer{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", nif='" + nif + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "<------------Customer------------->" + '\n' +
+                "name: " + name + '\n' +
+                "address: " + address + '\n' +
+                "nif: " + nif + '\n' +
+                "email: " + email + '\n' +
+                "---------------------------------" + '\n';
     }
 }

@@ -1,3 +1,5 @@
+package model;
+
 public class PremiumCustomer extends Customer
 {
     private static final float ShippingDisc = 0.2F;
@@ -13,8 +15,8 @@ public class PremiumCustomer extends Customer
         return YearMemb;
     }
 
-    public PremiumCustomer(String name, String address, String nif, String email)
-    {
+    public PremiumCustomer(String name, String address, String nif, String email) {
+
         super(name, address, nif, email);
     }
 
@@ -22,21 +24,21 @@ public class PremiumCustomer extends Customer
     @Override
     public String customerType()
     {
-        return null;
+        return "P";
         //TBD
     }
 
     @Override
     public float yearCalc()
     {
-        return 0;
+        return YearMemb;
         //TBD
     }
 
     @Override
     public float shippingDisc()
     {
-        return 0;
+        return ShippingDisc;
         //TBD
     }
 

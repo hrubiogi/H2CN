@@ -1,11 +1,16 @@
+package model;
+
 public class Item
 {
+    //Fields
     private String code;
     private String description;
     private float price;
     private float shippingCost;
     private int prepTime;
 
+
+    //getters y setters
     public String getCode()
     {
         return code;
@@ -57,6 +62,7 @@ public class Item
     }
 
 
+    //constructor
     public Item(String code, String description, float price, float shippingCost, int prepTime)
     {
         this.code = code;
@@ -67,15 +73,16 @@ public class Item
     }
 
 
+    //methods
     @Override
     public String toString()
     {
-        return "Item{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", shippingCost=" + shippingCost +
-                ", prepTime=" + prepTime +
-                '}';
+        return "<------------Item------------->" + '\n' +
+                "code: " + code + '\n' +
+                "description: " + description + '\n' +
+                "price: " + price + '\n' +
+                "shippingCost: " + shippingCost + '\n' +
+                "prepTime: " + prepTime + '\n' +
+                " ----------------------------";
     }
 }

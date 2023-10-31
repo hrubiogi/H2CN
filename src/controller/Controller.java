@@ -1,3 +1,6 @@
+package controller;
+import model.Data;
+
 import java.time.LocalDate;
 
 public class Controller
@@ -12,6 +15,6 @@ public class Controller
     //constructor
     public Controller()
     {
-        data = new Data ();
+        data = new Data();
     }
 }
