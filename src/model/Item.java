@@ -77,12 +77,12 @@ public class Item
     @Override
     public String toString()
     {
-        return "model.Item{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", shippingCost=" + shippingCost +
-                ", prepTime=" + prepTime +
-                '}' + "\n";
+        return "<------------Item------------->" + '\n' +
+                "code: " + code + '\n' +
+                "description: " + description + '\n' +
+                "price: " + price + '\n' +
+                "shippingCost: " + shippingCost + '\n' +
+                "prepTime: " + prepTime + '\n' +
+                " ----------------------------";
     }
 }
