@@ -1,13 +1,6 @@
 package model;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import view.GestionOS.*;
-import model.ItemsList.*;
-import model.OrdersList.*;
-import model.CustomersList.*;
-import java.lang.Thread.*;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +17,10 @@ class DataTest {
 
     @Test
     void orderCreationTest() {
-        Customer c1 = new PremiumCustomer("n", "o", "1", "ejemplo1");
+        Customer c1 = null;
+        c1 = new PremiumCustomer("n", "o", "1", "ejemplo1");
+
+
         Item i1 = new Item("1000", "mueble", 1500.99F, 5, 0);/*
         *Dados los valores necesarios para el test, se ha decidido que se simplifiquen los valores de preptime y
         el Thread.sleep a lo mínimo necesario para completar el test.

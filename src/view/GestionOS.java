@@ -3,13 +3,10 @@ import controller.Controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 import model.Customer;
-import model.StandardCustomer;
-import model.PremiumCustomer;
 import model.Item;
-import model.Order;
 import utils.ValueIsEmptyException;
 
 public class GestionOS
@@ -187,7 +184,6 @@ public class GestionOS
     }
 
     String askField(String stringToPrint) {
-        String input;
 
         System.out.println(stringToPrint);
 
@@ -290,7 +286,7 @@ public class GestionOS
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos pendientes o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
-        if (input == "0") {
+        if (Objects.equals(input, "0")) {
             controller.getData().getOrdersList().getPendingOrders();
         } else {
             Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
@@ -304,7 +300,7 @@ public class GestionOS
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos enviados o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
-        if (input == "0") {
+        if (Objects.equals(input, "0")) {
             controller.getData().getOrdersList().getSentOrders();
         } else {
             Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);

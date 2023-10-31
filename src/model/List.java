@@ -7,45 +7,21 @@ public class List<T>
 
     protected ArrayList<T> list;
 
-    public ArrayList<T> getList()
-    {
-        return list;
-    }
-
     //constructor
     public List()
     {
         list = new ArrayList<>();
     }
 
-
-    public int getSize()
+    public ArrayList<T> getList()
     {
-        return -1;
-        // TO-BE-DONE
+        return list;
     }
+
     public void add(T t)
     {
         getList().add(t);
     }
-    public void delete(T t)
-    {
-        //list.remove(t);
-    }
-   /*public T getAtPosition(int position)
-    {
-        //return ;
 
-    }*/
-    public void clear()
-    {
-        // TO-BE-DONE
-    }
-    public boolean isEmpty()
-    {
-
-        return true;
-        //TO-BE-DONE
-    }
 
 }

@@ -1,11 +1,18 @@
 package model;
 
-public abstract class Customer
-{
+public abstract class Customer {
     private String name;
     private String address;
     private String nif;
     private String email;
+
+    public Customer(String name, String address, String nif, String email)
+    {
+        this.name = name;
+        this.address = address;
+        this.nif = nif;
+        this.email = email;
+    }
 
     public String getName()
     {
@@ -44,27 +51,6 @@ public abstract class Customer
 
     public void setEmail(String email)
     {
-        this.email = email;
-    }
-
-    public Customer(String name, String address, String nif, String email) throws CustomerException
-    {
-        if(name == null){
-
-            throw new IllegalArgumentException("El nombre del cliente no puede estar vacío");
-        }
-        if(nif == null){
-
-            throw new IllegalArgumentException("El NIF no puede estar vacío");
-        }
-        if(email == null){
-
-            throw new IllegalArgumentException("El Email no puede estar vacío");
-        }
-
-        this.name = name;
-        this.address = address;
-        this.nif = nif;
         this.email = email;
     }
 

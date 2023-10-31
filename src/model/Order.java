@@ -1,7 +1,8 @@
 package model;
 
+import utils.DuplicateOrderIdException;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class Order

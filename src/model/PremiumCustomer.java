@@ -15,8 +15,8 @@ public class PremiumCustomer extends Customer
         return YearMemb;
     }
 
-    public PremiumCustomer(String name, String address, String nif, String email)
-    {
+    public PremiumCustomer(String name, String address, String nif, String email) {
+
         super(name, address, nif, email);
     }
 

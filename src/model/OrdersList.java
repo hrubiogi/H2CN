@@ -1,5 +1,7 @@
 package model;
 
+import utils.DuplicateOrderIdException;
+
 import java.util.ArrayList;
 
 public class OrdersList extends List<Order>

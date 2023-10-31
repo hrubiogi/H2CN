@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-
 public class CustomersList extends List<Customer>
 {
     //constructor
@@ -23,20 +21,12 @@ public class CustomersList extends List<Customer>
         }
 
     }
-
     public void getCustomers()
     {
-        System.out.println("Listado de Clientes: ");
-        for (int i = 0; i < this.list.size(); i++) {
-            System.out.println("------------------------------------");
-            System.out.println("Nombre: " + this.list.get(i).getName());
-            System.out.println("Dirección: " + this.list.get(i).getAddress());
-            System.out.println("Nif: " + this.list.get(i).getNif());
-            System.out.println("Email: " + this.list.get(i).getEmail());
-            //System.out.println("------------------------------------");
-        }
-
+        System.out.println(getList());
     }
+
+
 
     public void getStdCustomers() {
         //ArrayList<StandardCustomer> standardCustomerList = new ArrayList<>();//revisar tamaño array
