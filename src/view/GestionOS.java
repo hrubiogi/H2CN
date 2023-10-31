@@ -10,6 +10,7 @@ import model.StandardCustomer;
 import model.PremiumCustomer;
 import model.Item;
 import model.Order;
+import utils.ValueIsEmptyException;
 
 public class GestionOS
 {
@@ -194,58 +195,88 @@ public class GestionOS
     }
 
     void addItemHandler () {
-        String code = askField("Introduzca código de artículo: ");
-        String description = askField("Introduzca descripción de artículo: ");
-        float price = Float.parseFloat(askField("Introduzca precio de artículo: "));
-        float shippingCost = Float.parseFloat(askField("Introduzca precio de envío de artículo: "));
-        int prepTime = Integer.parseInt(askField("Introduzca tiempo de preparación de artículo: "));
-
-        controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
+        try {
+            String code = askField("Introduzca código de artículo: ");
+            stringIsEmpty(code);
+            String description = askField("Introduzca descripción de artículo: ");
+            stringIsEmpty(description);
+            float price = Float.parseFloat((askField("Introduzca precio de artículo: ")));
+            float shippingCost = Float.parseFloat(askField("Introduzca precio de envío de artículo: "));
+            int prepTime = Integer.parseInt(askField("Introduzca tiempo de preparación de artículo: "));
+            controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
+        } catch (ValueIsEmptyException e) {
+            System.out.println(e.getMessage());
+            addItemHandler();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
+            addItemHandler();
+        }
     }
 
     void addCustomerHandler (String emailInput) {
-        String name = askField("Introduzca nombre del cliente: ");
-        String address = askField("Introduzca dirección del cliente: ");
-        String nif = askField("Introduzca nif del cliente: ");
-        String email;
-        if(emailInput == null){
-            email = askField("Introduzca email del cliente: ");
-        }else{
-            email = emailInput;
+        try {
+            String name = askField("Introduzca nombre del cliente: ");
+            stringIsEmpty(name);
+            String address = askField("Introduzca dirección del cliente: ");
+            stringIsEmpty(address);
+            String nif = askField("Introduzca nif del cliente: ");
+            stringIsEmpty(nif);
+            String email;
+            if(emailInput == null){
+                email = askField("Introduzca email del cliente: ");
+            }else{
+                email = emailInput;
+            }
+            stringIsEmpty(email);
+
+            int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
+
+            if (isPremium != 1) {
+                controller.getData().getCustomersList().saveCustomer(name, address, nif, email, false);
+
+            } else {
+                controller.getData().getCustomersList().saveCustomer(name, address, nif, email, true);
+            }
+        } catch (ValueIsEmptyException e) {
+            System.out.println(e.getMessage());
+            addCustomerHandler(emailInput);
         }
-
-        int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
-
-        if (isPremium != 1) {
-            controller.getData().getCustomersList().saveCustomer(name, address, nif, email, false);
-
-        } else {
-            controller.getData().getCustomersList().saveCustomer(name, address, nif, email, true);
+    }
+    public void stringIsEmpty(String nameInput) throws ValueIsEmptyException {
+        if(nameInput.isEmpty()) {
+            throw new ValueIsEmptyException("El campo no puede estar vacío, vuelva a intentarlo");
         }
-
     }
 
     void addOrderHandler () {
-        String email = askField("Introduzca email del cliente relacionado al pedido: ");
-        Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+        try {
+            String email = askField("Introduzca email del cliente relacionado al pedido: ");
+            stringIsEmpty(email);
+            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
 
-        if (customer == null) {
-            addCustomerHandler(email);
-            customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+            if (customer == null) {
+                addCustomerHandler(email);
+                customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+            }
+
+            String code = askField("Introduzca código del artículo relacionado al pedido: ");
+            stringIsEmpty(code);
+            Item item = controller.getData().getItemsList().getItemByCode(code);
+
+            while (item == null) {
+                code = askField("Código de artículo incorrecto, vuelva a intentarlo ");
+                item = controller.getData().getItemsList().getItemByCode(code);
+            }
+
+            int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
+            controller.getData().getOrdersList().saveOrder(customer, item, quantity);
+        } catch (ValueIsEmptyException e) {
+            System.out.println(e.getMessage());
+            addOrderHandler();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
+            addItemHandler();
         }
-
-        String code = askField("Introduzca código del artículo relacionado al pedido: ");
-        Item item = controller.getData().getItemsList().getItemByCode(code);
-
-        while(item == null) {
-            code = askField("Código de artículo incorrecto, vuelva a intentarlo ");
-            item = controller.getData().getItemsList().getItemByCode(code);
-        }
-
-        int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
-        Date date = new Date();
-        long id = Math.round(Math.floor(Math.random() *(100000 - 0 + 1) + 0));
-        controller.getData().getOrdersList().saveOrder(customer, item, quantity);
     }
 
     void deleteOrderHandler() {
