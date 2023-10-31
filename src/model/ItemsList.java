@@ -11,12 +11,8 @@ public class ItemsList extends List<Item>
     //methods
     public void saveItem(String code, String description, float price, float shippingCost, int prepTime)
     {
-        try {
-            Item item = new Item(code, description, price, shippingCost, prepTime);
-            add(item);
-        } catch (IllegalArgumentException e) {
-            System.out.print("Tipo de dato no valido: " + e.getMessage());
-        }
+        Item item = new Item(code, description, price, shippingCost, prepTime);
+        add(item);
     }
 
     public void getItems()
