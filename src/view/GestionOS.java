@@ -39,7 +39,8 @@ public class GestionOS
                             addItemHandler();
                             break;
                         case '2':
-                            controller.getData().getItemsList().getItems();
+                            //controller.getData().getItemsList().getItems();
+                            controller.getData().getDaoFactory().createItemDAO().listItems();
                             break;
                         case '0':
                             break;
@@ -199,7 +200,9 @@ public class GestionOS
             float price = Float.parseFloat((askField("Introduzca precio de artículo: ")));
             float shippingCost = Float.parseFloat(askField("Introduzca precio de envío de artículo: "));
             int prepTime = Integer.parseInt(askField("Introduzca tiempo de preparación de artículo: "));
-            controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
+            //controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
+            controller.getData().getDaoFactory().createItemDAO().saveItem(code, description, price, shippingCost, prepTime);
+
         } catch (ValueIsEmptyException e) {
             System.out.println(e.getMessage());
             addItemHandler();

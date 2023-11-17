@@ -6,6 +6,8 @@ public class Data
     private CustomersList customersList;
     private OrdersList ordersList;
 
+    private DAOFactory daoFactory;
+
     public ItemsList getItemsList()
     {
         return itemsList;
@@ -19,11 +21,16 @@ public class Data
         return ordersList;
     }
 
+    public DAOFactory getDaoFactory() {
+        return daoFactory;
+    }
+
     //constructor
     public Data ()
     {
-        itemsList = new ItemsList();
-        customersList = new CustomersList();
-        ordersList = new OrdersList();
+        //itemsList = new ItemsList();
+        //customersList = new CustomersList();
+        //ordersList = new OrdersList();
+        daoFactory = new MySQLDAOFactory();
     }
 }
