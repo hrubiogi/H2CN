@@ -65,11 +65,11 @@ public abstract class Customer {
     @Override
     public String toString()
     {
-        return "model.Customer{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", nif='" + nif + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "<------------Customer------------->" + '\n' +
+                "name: " + name + '\n' +
+                "address: " + address + '\n' +
+                "nif: " + nif + '\n' +
+                "email: " + email + '\n' +
+                "---------------------------------" + '\n';
     }
 }
