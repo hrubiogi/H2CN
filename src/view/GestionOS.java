@@ -64,13 +64,22 @@ public class GestionOS
                             addCustomerHandler(null);
                             break;
                         case '2':
-                            controller.getData().getCustomersList().getCustomers();
+                            ArrayList<Customer> customerList = controller.getData().getCustomerList();
+                            System.out.println("\n<------------Lista de Clientes------------->");
+                            System.out.println(customerList);
+                            System.out.println("<----------------------------->");
                             break;
                         case '3':
-                            controller.getData().getCustomersList().getStdCustomers();
+                            ArrayList<Customer> stdCustomerList = controller.getData().getStdCustomerList();
+                            System.out.println("\n<------------Lista de Clientes Estándar------------->");
+                            System.out.println(stdCustomerList);
+                            System.out.println("<----------------------------->");
                             break;
                         case '4':
-                            controller.getData().getCustomersList().getPremCustomers();
+                            ArrayList<Customer> premiumCustomerList = controller.getData().getPremiumCustomerList();
+                            System.out.println("\n<------------Lista de Clientes Premium------------->");
+                            System.out.println(premiumCustomerList);
+                            System.out.println("<----------------------------->");
                             break;
                         case '0':
                             break;
@@ -84,7 +93,7 @@ public class GestionOS
                         action = askAction('3');
                     }
 
-                    switch (action) {
+/*                    switch (action) {
                         case '1':
                             addOrderHandler();
                             break;
@@ -99,7 +108,7 @@ public class GestionOS
                             break;
                         case '0':
                             break;
-                    }
+                    }*/
 
                     break;
                 case '0':
@@ -225,24 +234,23 @@ public class GestionOS
             stringIsEmpty(address);
             String nif = askField("Introduzca nif del cliente: ");
             stringIsEmpty(nif);
-            String email = askField("Introduzca email del cliente: ");
-            stringIsEmpty(email);
-            controller.getData().getDaoFactory().createCustomerDAO().saveCustomer(name, address, nif, email);
-
+            String email;
+//            String email = askField("Introduzca email del cliente: ");
+//            System.out.println(email);
+//            stringIsEmpty(email);
             if(emailInput == null){
                 email = askField("Introduzca email del cliente: ");
             }else{
                 email = emailInput;
             }
-            stringIsEmpty(email);            
 
             int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
 
-            if (isPremium != 1) {
-                controller.getData().getCustomersList().saveCustomer(name, address, nif, email, false);
+            if (isPremium == 1) {
+                controller.getData().saveCustomer(name, address, nif, email, true);
 
             } else {
-                controller.getData().getCustomersList().saveCustomer(name, address, nif, email, true);
+                controller.getData().saveCustomer(name, address, nif, email, false);
             }
         } catch (ValueIsEmptyException e) {
             System.out.println(e.getMessage());
@@ -255,7 +263,7 @@ public class GestionOS
         }
     }
 
-    void addOrderHandler () {
+/*    void addOrderHandler () {
         try {
             String email = askField("Introduzca email del cliente relacionado al pedido: ");
             stringIsEmpty(email);
@@ -303,9 +311,9 @@ public class GestionOS
             Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
             controller.getData().getOrdersList().getPendingOrdersByCustomer(customer);
         }
-    }
+    }*/
 
-    void showSentOrdersHandler() {
+/*    void showSentOrdersHandler() {
         String input;
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos enviados o 0 para mostrarlos todos");
@@ -317,6 +325,6 @@ public class GestionOS
             Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
             controller.getData().getOrdersList().getSentOrdersByCustomer(customer);
         }
-    }
+    }*/
 }
 

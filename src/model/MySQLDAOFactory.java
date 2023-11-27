@@ -7,9 +7,6 @@ public class MySQLDAOFactory implements DAOFactory {
         return new MySQLItemDAO();
     }
 
-    /**
-     * @return
-     */
     @Override
     public CustomerDAO createCustomerDAO() {
         return new MySQLCustomerDAO();

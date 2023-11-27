@@ -4,27 +4,21 @@ import java.util.ArrayList;
 
 public class Data
 {
-    private ItemsList itemsList;
-    private CustomersList customersList;
-    private OrdersList ordersList;
 
     private DAOFactory daoFactory;
 
-    public ItemsList getItemsList()
+    public Data ()
     {
-        return itemsList;
-    }
-    public CustomersList getCustomersList()
-    {
-        return customersList;
-    }
-    public OrdersList getOrdersList()
-    {
-        return ordersList;
+        daoFactory = new MySQLDAOFactory();
     }
 
     public DAOFactory getDaoFactory() {
         return daoFactory;
+    }
+
+    // Item methods
+    public void saveItem(String code, String description, float price, float shippingCost, int prepTime) {
+        daoFactory.createItemDAO().saveItem(code, description, price, shippingCost, prepTime);
     }
 
     public ArrayList<Item> getItemListDAO() {
@@ -32,12 +26,27 @@ public class Data
         return itemList;
     }
 
-    //constructor
-    public Data ()
-    {
-        //itemsList = new ItemsList();
-        //customersList = new CustomersList();
-        //ordersList = new OrdersList();
-        daoFactory = new MySQLDAOFactory();
+    // Customer methods
+    public void saveCustomer(String name, String address, String nif, String email, boolean isPremium) {
+        if (isPremium) {
+            daoFactory.createCustomerDAO().savePremCustomer(name, address, nif, email);
+        } else {
+            daoFactory.createCustomerDAO().saveStdCustomer(name, address, nif, email);
+        }
+
+    }
+    public ArrayList<Customer> getCustomerList() {
+        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listCustomers();
+        return customerList;
+    }
+
+    public ArrayList<Customer> getPremiumCustomerList() {
+        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listPremiumCustomers();
+        return customerList;
+    }
+
+    public ArrayList<Customer> getStdCustomerList() {
+        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listStdCustomers();
+        return customerList;
     }
 }

@@ -69,7 +69,6 @@ public abstract class Customer {
                 "name: " + name + '\n' +
                 "address: " + address + '\n' +
                 "nif: " + nif + '\n' +
-                "email: " + email + '\n' +
-                "---------------------------------" + '\n';
+                "email: " + email + '\n';
     }
 }
