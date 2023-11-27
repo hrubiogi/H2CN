@@ -220,7 +220,10 @@ public class GestionOS
             stringIsEmpty(address);
             String nif = askField("Introduzca nif del cliente: ");
             stringIsEmpty(nif);
-            String email;
+            String email = askField("Introduzca email del cliente: ");
+            stringIsEmpty(email);
+            controller.getData().getDaoFactory().createCustomerDAO().saveCustomer(name, address, nif, email);
+
             if(emailInput == null){
                 email = askField("Introduzca email del cliente: ");
             }else{
