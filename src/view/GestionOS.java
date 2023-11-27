@@ -17,6 +17,9 @@ public class GestionOS
     Controller controller = new Controller();
 
 
+    /**
+     * 
+     */
     void menu() {
         boolean leave = false;
         char action;
@@ -229,7 +232,7 @@ public class GestionOS
             }else{
                 email = emailInput;
             }
-            stringIsEmpty(email);
+            stringIsEmpty(email);            
 
             int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
 
