@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Data
 {
     private ItemsList itemsList;
@@ -23,6 +25,11 @@ public class Data
 
     public DAOFactory getDaoFactory() {
         return daoFactory;
+    }
+
+    public ArrayList<Item> getItemListDAO() {
+        ArrayList<Item> itemList = daoFactory.createItemDAO().listItems();
+        return itemList;
     }
 
     //constructor

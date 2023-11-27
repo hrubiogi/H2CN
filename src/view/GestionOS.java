@@ -42,8 +42,10 @@ public class GestionOS
                             addItemHandler();
                             break;
                         case '2':
-                            //controller.getData().getItemsList().getItems();
-                            controller.getData().getDaoFactory().createItemDAO().listItems();
+                            ArrayList<Item> itemList = controller.getData().getItemListDAO();
+                            System.out.println("\n<------------Lista de Artículos------------->");
+                            System.out.println(itemList);
+                            System.out.println("<----------------------------->");
                             break;
                         case '0':
                             break;

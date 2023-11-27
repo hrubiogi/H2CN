@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class MySQLItemDAO implements ItemDAO {
     @Override
@@ -42,7 +43,8 @@ public class MySQLItemDAO implements ItemDAO {
     }
 
     @Override
-    public void listItems() {
+    public ArrayList<Item> listItems() {
+        ArrayList<Item> itemList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {
             if (connection != null) {
                 System.out.println("Conexión exitosa");
@@ -54,23 +56,17 @@ public class MySQLItemDAO implements ItemDAO {
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     // Ejecutar la consulta SELECT
                     try (ResultSet resultSet = statement.executeQuery()) {
-                        System.out.println("\n<------------Lista de Artículos------------->");
+
                         // Procesar y mostrar los resultados
                         while (resultSet.next()) {
-                            // Aquí puedes acceder a los valores de las columnas de cada fila
-                            String code = resultSet.getString("code");
-                            String description = resultSet.getString("description");
-                            float price = resultSet.getFloat("price");
-                            float shippingCost = resultSet.getFloat("shippingCost");
-                            int prepTime = resultSet.getInt("prepTime");
-
-                            // Mostrar los resultados en la consola
-                            System.out.println("Code: " + code);
-                            System.out.println("Description: " + description);
-                            System.out.println("Price: " + price);
-                            System.out.println("Shipping Cost: " + shippingCost);
-                            System.out.println("Preparation Time: " + prepTime);
-                            System.out.println("---------------------------------------------");
+                            Item item = new Item(
+                                    resultSet.getString("code"),
+                                    resultSet.getString("description"),
+                                    resultSet.getFloat("price"),
+                                    resultSet.getFloat("shippingCost"),
+                                    resultSet.getInt("prepTime")
+                            );
+                            itemList.add(item);
                         }
                     }
                 } catch (SQLException e) {
@@ -80,5 +76,6 @@ public class MySQLItemDAO implements ItemDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return itemList;
     }
 }
