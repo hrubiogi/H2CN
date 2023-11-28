@@ -67,21 +67,33 @@ public class GestionOS
                             break;
                         case '2':
                             ArrayList<Customer> customerList = controller.getData().getCustomerList();
-                            System.out.println("\n<------------Lista de Clientes------------->");
-                            System.out.println(customerList);
-                            System.out.println("<----------------------------->");
+                            if (customerList.isEmpty()) {
+                                System.out.println("\nNo se han encontrado clientes");
+                            } else {
+                                System.out.println("\n<------------Lista de Clientes------------->");
+                                System.out.println(customerList);
+                                System.out.println("<----------------------------->");
+                            }
                             break;
                         case '3':
                             ArrayList<Customer> stdCustomerList = controller.getData().getStdCustomerList();
-                            System.out.println("\n<------------Lista de Clientes Estándar------------->");
-                            System.out.println(stdCustomerList);
-                            System.out.println("<----------------------------->");
+                            if (stdCustomerList.isEmpty()) {
+                                System.out.println("\nNo se han encontrado clientes estándar");
+                            } else {
+                                System.out.println("\n<------------Lista de Clientes Estándar------------->");
+                                System.out.println(stdCustomerList);
+                                System.out.println("<----------------------------->");
+                            }
                             break;
                         case '4':
                             ArrayList<Customer> premiumCustomerList = controller.getData().getPremiumCustomerList();
-                            System.out.println("\n<------------Lista de Clientes Premium------------->");
-                            System.out.println(premiumCustomerList);
-                            System.out.println("<----------------------------->");
+                            if (premiumCustomerList.isEmpty()) {
+                                System.out.println("\nNo se han encontrado clientes premium");
+                            } else {
+                                System.out.println("\n<------------Lista de Clientes Premium------------->");
+                                System.out.println(premiumCustomerList);
+                                System.out.println("<----------------------------->");
+                            }
                             break;
                         case '0':
                             break;
@@ -101,15 +113,23 @@ public class GestionOS
                             break;
                         case '2':
                             ArrayList<Order> pendingOrders = showPendingOrdersHandler();
-                            System.out.println("\n<---------Pedidos pendientes--------->");
-                            System.out.println(pendingOrders);
-                            System.out.println("<-------------------------------------->");
+                            if (pendingOrders.isEmpty()) {
+                                System.out.println("\nNo se han encontrado pedidos pendientes");
+                            } else {
+                                System.out.println("\n<---------Pedidos pendientes--------->");
+                                System.out.println(pendingOrders);
+                                System.out.println("<-------------------------------------->");
+                            }
                             break;
                         case '3':
                             ArrayList<Order> sentOrders = showSentOrdersHandler();
-                            System.out.println("\n<----------Pedidos enviados---------->");
-                            System.out.println(sentOrders);
-                            System.out.println("<-------------------------------------->");
+                            if (pendingOrders.isEmpty()) {
+                                System.out.println("\nNo se han encontrado pedidos enviados");
+                            } else {
+                                System.out.println("\n<----------Pedidos enviados---------->");
+                                System.out.println(sentOrders);
+                                System.out.println("<-------------------------------------->");
+                            }
                             break;
                         case '4':
                             deleteOrderHandler();
@@ -348,6 +368,7 @@ public class GestionOS
             sentOrders = controller.getData().getSentOrdersListDAO();
         } else {
             Customer customer = controller.getData().getCustomerByEmail(input);
+            System.out.println(customer);
             sentOrders = controller.getData().getSentOrdersByCustomerListDAO(customer);
         }
         return sentOrders;

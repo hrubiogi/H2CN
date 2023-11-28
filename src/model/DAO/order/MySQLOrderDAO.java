@@ -343,6 +343,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date " +
                     "AND c.email = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, customer.getEmail());
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     int customer_Type = resultSet.getInt("customer_type");
