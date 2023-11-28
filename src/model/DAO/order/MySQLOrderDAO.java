@@ -83,11 +83,11 @@ public class MySQLOrderDAO implements OrderDAO {
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     try (ResultSet resultSet = statement.executeQuery()) {
                         while (resultSet.next()) {
-                            int customer_Type = resultSet.getInt("customer_type");
+                            String customer_Type = resultSet.getString("customerType");
                             PremiumCustomer customer_p = null;
                             StandardCustomer customer_s = null;
 
-                            if (Objects.equals(customer_Type, 2)) {
+                            if (Objects.equals(customer_Type, "Premium")) {
                                 customer_p = new PremiumCustomer(
                                         resultSet.getString("name"),
                                         resultSet.getString("customerAddress"),
@@ -169,15 +169,12 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
-                    "c.address AS customer_address, " +
-                    "c.email AS customer_email, " +
                     "c.type AS customer_type, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
-                    "i.shippingCost AS item_shipping_cost, " +
-                    "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
+                    "i.shippingCost AS shipping_cost, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
@@ -190,21 +187,21 @@ public class MySQLOrderDAO implements OrderDAO {
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    int customer_Type = resultSet.getInt("customer_type");
+                    String customer_Type = resultSet.getString("customerType");
                     PremiumCustomer customer_p = null;
                     StandardCustomer customer_s = null;
 
-                    if (Objects.equals(customer_Type, 2)) {
+                    if (Objects.equals(customer_Type, "Premium")) {
                         customer_p = new PremiumCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
+                                resultSet.getString("name"),
+                                resultSet.getString("customerAddress"),
                                 resultSet.getString("customer_nif"),
                                 resultSet.getString("customer_email")
                         );
                     } else {
                         customer_s = new StandardCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
+                                resultSet.getString("name"),
+                                resultSet.getString("customerAddress"),
                                 resultSet.getString("customer_nif"),
                                 resultSet.getString("customer_email")
                         );
@@ -246,15 +243,12 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
-                    "c.address AS customer_address, " +
-                    "c.email AS customer_email, " +
-                    "c.type AS customer_type, " +
+                    "c.type  AS customer_type, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
-                    "i.shippingCost AS item_shipping_cost, " +
-                    "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
+                    "i.shippingCost AS shipping_cost, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
@@ -269,22 +263,22 @@ public class MySQLOrderDAO implements OrderDAO {
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    int customer_Type = resultSet.getInt("customer_type");
+                    String customer_Type = resultSet.getString("customerType");
                     PremiumCustomer customer_p = null;
                     StandardCustomer customer_s = null;
 
-                    if (Objects.equals(customer_Type, 2)) {
+                    if (Objects.equals(customer_Type, "Premium")) {
                         customer_p = new PremiumCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
-                                resultSet.getString("customer_nif"),
+                                resultSet.getString("name"),
+                                resultSet.getString("customerAddress"),
+                                resultSet.getString("customerNif"),
                                 resultSet.getString("customer_email")
                         );
                     } else {
                         customer_s = new StandardCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
-                                resultSet.getString("customer_nif"),
+                                resultSet.getString("name"),
+                                resultSet.getString("customerAddress"),
+                                resultSet.getString("customerNif"),
                                 resultSet.getString("customer_email")
                         );
                     }
@@ -325,15 +319,12 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
-                    "c.address AS customer_address, " +
-                    "c.email AS customer_email, " +
-                    "c.type AS customer_type, " +
+                    "c.type AS customer_type " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
-                    "i.shippingCost AS item_shipping_cost, " +
-                    "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
+                    "i.shippingCost AS shipping_cost, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date AS is_shipped " +
@@ -344,41 +335,40 @@ public class MySQLOrderDAO implements OrderDAO {
                     "AND c.email = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    int customer_Type = resultSet.getInt("customer_type");
-                    PremiumCustomer customer_p = null;
-                    StandardCustomer customer_s = null;
+                String customer_Type = resultSet.getString("customerType");
+                PremiumCustomer customer_p = null;
+                StandardCustomer customer_s = null;
 
-                    if (Objects.equals(customer_Type, 2)) {
-                        customer_p = new PremiumCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
-                                resultSet.getString("customer_nif"),
-                                resultSet.getString("customer_email")
-                        );
-                    } else {
-                        customer_s = new StandardCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
-                                resultSet.getString("customer_nif"),
-                                resultSet.getString("customer_email")
-                        );
-                    }
-                    Item item = new Item(
-                            resultSet.getString("item_code"),
-                            resultSet.getString("item_description"),
-                            resultSet.getFloat("item_price"),
-                            resultSet.getFloat("item_shipping_cost"),
-                            resultSet.getInt("item_prep_time")
+                if (Objects.equals(customer_Type, "Premium")) {
+                    customer_p = new PremiumCustomer(
+                            resultSet.getString("name"),
+                            resultSet.getString("customerAddress"),
+                            resultSet.getString("customerNif"),
+                            resultSet.getString("customer_email")
                     );
-                    Order order = new Order(
-                            (customer_p != null) ? customer_p : customer_s,
-                            item,
-                            resultSet.getInt("quantity")
+                } else {
+                    customer_s = new StandardCustomer(
+                            resultSet.getString("name"),
+                            resultSet.getString("customerAddress"),
+                            resultSet.getString("customerNif"),
+                            resultSet.getString("customer_email")
                     );
-                    ordersList.add(order);
                 }
+                Item item = new Item(
+                        resultSet.getString("item_code"),
+                        resultSet.getString("item_description"),
+                        resultSet.getFloat("item_price"),
+                        resultSet.getFloat("item_shipping_cost"),
+                        resultSet.getInt("item_prep_time")
+                );
+                Order order = new Order(
+                        (customer_p != null) ? customer_p : customer_s,
+                        item,
+                        resultSet.getInt("quantity")
+                );
+                ordersList.add(order);
             }
+
         } catch (DuplicateOrderIdException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -396,15 +386,12 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
-                    "c.address AS customer_address, " +
-                    "c.email AS customer_email, " +
                     "c.type AS customer_type, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
-                    "i.shippingCost AS item_shipping_cost, " +
-                    "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
+                    "i.shippingCost AS shipping_cost, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date AS is_shipped " +
@@ -415,41 +402,38 @@ public class MySQLOrderDAO implements OrderDAO {
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 ResultSet resultSet = statement.executeQuery();
+                String customer_Type = resultSet.getString("customerType");
+                PremiumCustomer customer_p = null;
+                StandardCustomer customer_s = null;
 
-                while (resultSet.next()) {
-                    int customer_Type = resultSet.getInt("customer_type");
-                    PremiumCustomer customer_p = null;
-                    StandardCustomer customer_s = null;
-
-                    if (Objects.equals(customer_Type, 2)) {
-                        customer_p = new PremiumCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
-                                resultSet.getString("customer_nif"),
-                                resultSet.getString("customer_email")
-                        );
-                    } else {
-                        customer_s = new StandardCustomer(
-                                resultSet.getString("customer_name"),
-                                resultSet.getString("customer_address"),
-                                resultSet.getString("customer_nif"),
-                                resultSet.getString("customer_email")
-                        );
-                    }
-                    Item item = new Item(
-                            resultSet.getString("item_code"),
-                            resultSet.getString("item_description"),
-                            resultSet.getFloat("item_price"),
-                            resultSet.getFloat("item_shipping_cost"),
-                            resultSet.getInt("item_prep_time")
+                if (Objects.equals(customer_Type, "Premium")) {
+                    customer_p = new PremiumCustomer(
+                            resultSet.getString("name"),
+                            resultSet.getString("customerAddress"),
+                            resultSet.getString("customerNif"),
+                            resultSet.getString("customer_email")
                     );
-                    Order order = new Order(
-                            (customer_p != null) ? customer_p : customer_s,
-                            item,
-                            resultSet.getInt("quantity")
+                } else {
+                    customer_s = new StandardCustomer(
+                            resultSet.getString("name"),
+                            resultSet.getString("customerAddress"),
+                            resultSet.getString("customerNif"),
+                            resultSet.getString("customer_email")
                     );
-                    ordersList.add(order);
                 }
+                Item item = new Item(
+                        resultSet.getString("item_code"),
+                        resultSet.getString("item_description"),
+                        resultSet.getFloat("item_price"),
+                        resultSet.getFloat("item_shipping_cost"),
+                        resultSet.getInt("item_prep_time")
+                );
+                Order order = new Order(
+                        (customer_p != null) ? customer_p : customer_s,
+                        item,
+                        resultSet.getInt("quantity")
+                );
+                ordersList.add(order);
             }
 
         } catch (DuplicateOrderIdException e) {
