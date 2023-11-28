@@ -19,7 +19,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
             if (connection != null) {
                 System.out.println("Conexión exitosa");
 
-                    String sql = "INSERT INTO customers_premium (name, address, nif, email) VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO customers (name, address, nif, email, type) VALUES (?, ?, ?, ?, ?)";
                 
                 // Crear la declaración preparada con los valores del pedido
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -27,7 +27,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
                     statement.setString(2, address);
                     statement.setString(3, nif);
                     statement.setString(4, email);
-
+                    statement.setInt(5, 2);
                     // Ejecutar la sentencia SQL
                     statement.executeUpdate();
 
@@ -49,7 +49,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
             if (connection != null) {
                 System.out.println("Conexión exitosa");
 
-                    String sql = "INSERT INTO customers_standard (name, address, nif, email) VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO customers (name, address, nif, email, type) VALUES (?, ?, ?, ?, ?)";
                 
                 // Crear la declaración preparada con los valores del pedido
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -57,6 +57,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
                     statement.setString(2, address);
                     statement.setString(3, nif);
                     statement.setString(4, email);
+                    statement.setInt(5, 1);
 
                     // Ejecutar la sentencia SQL
                     statement.executeUpdate();
@@ -82,7 +83,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
                 System.out.println("Conexión exitosa");
 
                 // Sentencia SQL para seleccionar todos los Customers
-                String sql = "SELECT name, address, nif, email, 'Premium' AS customer_type FROM customers_premium UNION SELECT name, address, nif, email, 'Standard' AS customer_type FROM customers_standard";
+                String sql = "SELECT * FROM customers";
 
                 // Crear la declaración preparada
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -95,9 +96,9 @@ public class MySQLCustomerDAO implements CustomerDAO {
                             String address = resultSet.getString("address");
                             String nif = resultSet.getString("nif");
                             String email = resultSet.getString("email");
-                            String tipoCliente = resultSet.getString("customer_type");
+                            int tipoCliente = resultSet.getInt("type");
 
-                            if (tipoCliente == "Premium") {
+                            if (tipoCliente == 2) {
                                 PremiumCustomer c = new PremiumCustomer(name, address, nif, email);
                                 customerList.add(c);
                             } else {
@@ -123,7 +124,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
                 System.out.println("Conexión exitosa");
 
                 // Sentencia SQL para seleccionar todos los Customers
-                String sql = "SELECT * FROM customers_premium";
+                String sql = "SELECT * FROM customers WHERE type = 2";
 
                 // Crear la declaración preparada
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -158,7 +159,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
                 System.out.println("Conexión exitosa");
 
                 // Sentencia SQL para seleccionar todos los Customers
-                String sql = "SELECT * FROM customers_standard";
+                String sql = "SELECT * FROM customers WHERE type = 1";
 
                 // Crear la declaración preparada
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {

@@ -252,9 +252,9 @@ public class GestionOS
                 email = emailInput;
             }
 
-            int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
+            int isPremium = Integer.parseInt(askField("Presione 2 si se trata de un cliente premium, 1 si es standard: "));
 
-            if (isPremium == 1) {
+            if (isPremium == 2) {
                 controller.getData().saveCustomer(name, address, nif, email, true);
 
             } else {
