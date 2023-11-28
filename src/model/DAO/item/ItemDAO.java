@@ -1,4 +1,6 @@
-package model;
+package model.DAO.item;
+
+import model.Item;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

@@ -1,4 +1,8 @@
-package model;
+package model.DAO.order;
+
+import model.Customer;
+import model.Item;
+import model.Order;
 
 import java.util.ArrayList;
 

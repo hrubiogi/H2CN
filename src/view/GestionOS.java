@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import model.Customer;
 import model.Item;
+import model.Order;
 import utils.ValueIsEmptyException;
 
 public class GestionOS
@@ -93,22 +94,28 @@ public class GestionOS
                         action = askAction('3');
                     }
 
-/*                    switch (action) {
+                    switch (action) {
                         case '1':
                             addOrderHandler();
                             break;
                         case '2':
-                            showPendingOrdersHandler();
+                            ArrayList<Order> pendingOrders = showPendingOrdersHandler();
+                            System.out.println("\n<---------Pedidos pendientes--------->");
+                            System.out.println(pendingOrders);
+                            System.out.println("<-------------------------------------->");
                             break;
                         case '3':
-                            showSentOrdersHandler();
+                            ArrayList<Order> sentOrders = showSentOrdersHandler();
+                            System.out.println("\n<----------Pedidos enviados---------->");
+                            System.out.println(sentOrders);
+                            System.out.println("<-------------------------------------->");
                             break;
                         case '4':
                             deleteOrderHandler();
                             break;
                         case '0':
                             break;
-                    }*/
+                    }
 
                     break;
                 case '0':
@@ -263,51 +270,39 @@ public class GestionOS
         }
     }
 
-   /* public void addOrderHandler() {
-        try {
-            // Pedir información para el pedido
-            String email = askField("Introduzca el email del cliente: ");
-            stringIsEmpty(email);
-
-            String itemCode = askField("Introduzca el código del producto: ");
-            stringIsEmpty(itemCode);
-
-            int quantity = Integer.parseInt(askField("Introduzca la cantidad: "));
-            // Validar si quantity puede ser 0 o negativo según tus requisitos
-
-            // Guardar el pedido utilizando el nombre del cliente y el código del artículo
-            controller.getData().saveOrder(email, itemCode, quantity);
-        } catch (ValueIsEmptyException | NumberFormatException e) {
-            System.out.println(e.getMessage());
-            addOrderHandler();
-        }
-    }
-
-/*   void addOrderHandler() {
+   void addOrderHandler() {
     try {
         // Pedir información para el pedido
         String email = askField("Introduzca el email del cliente relacionado al pedido: ");
         stringIsEmpty(email);
-        Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+        Customer customer = controller.getData().getCustomerByEmail(email);
 
         if (customer == null) {
+            System.out.println("No se ha encontrado ningún cliente con este e-mail, desea crearlo?");
+            int reuseEmail = Integer.parseInt(askField("Presione 1 si quiere crearlo, 0 si desa volver al menú: "));
+            if (reuseEmail == 0) {
+                return;
+            }
             addCustomerHandler(email);
-            customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+            customer = controller.getData().getCustomerByEmail(email);
         }
 
         String itemCode = askField("Introduzca el código del artículo relacionado al pedido: ");
         stringIsEmpty(itemCode);
-        Item item = controller.getData().getItemsList().getItemByCode(itemCode);
+        Item item = controller.getData().getItemByCode(itemCode);
 
         while (item == null) {
+            int returnVar = Integer.parseInt(askField("Presione 1 si quiere volver a introducir un código, 0 si desa volver al menú: "));
+            if (returnVar == 0) {
+                return;
+            }
             itemCode = askField("Código de artículo incorrecto, vuelva a intentarlo ");
-            item = controller.getData().getItemsList().getItemByCode(itemCode);
+            item = controller.getData().getItemByCode(itemCode);
         }
 
         int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
 
-        // Guardar el pedido utilizando el método saveOrder
-        controller.getData().getOrdersList().saveOrder(customer, item, quantity);
+        controller.getData().getDaoFactory().createOrderDAO().saveOrder(customer, item, quantity);
 
     } catch (ValueIsEmptyException | NumberFormatException e) {
         System.out.println(e.getMessage());
@@ -320,35 +315,39 @@ public class GestionOS
 
     void deleteOrderHandler() {
         String id = askField("Introduzca número de identificación del pedido a eliminar: ");
-        controller.getData().getOrdersList().deleteOrder(id);
+        controller.getData().getDaoFactory().createOrderDAO().deleteOrder(id);
     }
 
-    void showPendingOrdersHandler() {
+    ArrayList<Order> showPendingOrdersHandler() {
         String input;
+        ArrayList<Order> pendingOrders = new ArrayList<>();
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos pendientes o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            controller.getData().getOrdersList().getPendingOrders();
+            pendingOrders = controller.getData().getDaoFactory().createOrderDAO().getPendingOrders();
         } else {
-            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
-            controller.getData().getOrdersList().getPendingOrdersByCustomer(customer);
+            Customer customer = controller.getData().getCustomerByEmail(input);
+            pendingOrders = controller.getData().getDaoFactory().createOrderDAO().getPendingOrdersByCustomer(customer);
         }
-    }*/
+        return pendingOrders;
+    }
 
-/*    void showSentOrdersHandler() {
+    ArrayList<Order> showSentOrdersHandler() {
         String input;
+        ArrayList<Order> sentOrders = new ArrayList<>();
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos enviados o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            controller.getData().getOrdersList().getSentOrders();
+            sentOrders = controller.getData().getDaoFactory().createOrderDAO().getSentOrders();
         } else {
-            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
-            controller.getData().getOrdersList().getSentOrdersByCustomer(customer);
+            Customer customer = controller.getData().getCustomerByEmail(input);
+            sentOrders = controller.getData().getDaoFactory().createOrderDAO().getPendingOrdersByCustomer(customer);
         }
-    }*/
+        return sentOrders;
+    }
 }
 

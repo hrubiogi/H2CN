@@ -1,5 +1,9 @@
-package model;
+package model.DAO.customer;
 
+import model.Customer;
+import model.DAO.customer.CustomerDAO;
+import model.PremiumCustomer;
+import model.StandardCustomer;
 import utils.ConnectDB;
 
 import java.sql.Connection;

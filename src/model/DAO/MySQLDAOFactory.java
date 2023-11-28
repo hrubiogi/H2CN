@@ -1,4 +1,11 @@
-package model;
+package model.DAO;
+
+import model.DAO.customer.CustomerDAO;
+import model.DAO.customer.MySQLCustomerDAO;
+import model.DAO.item.ItemDAO;
+import model.DAO.item.MySQLItemDAO;
+import model.DAO.order.MySQLOrderDAO;
+import model.DAO.order.OrderDAO;
 
 public class MySQLDAOFactory implements DAOFactory {
 

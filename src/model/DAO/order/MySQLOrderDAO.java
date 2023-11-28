@@ -1,5 +1,6 @@
-package model;
+package model.DAO.order;
 
+import model.*;
 import utils.ConnectDB;
 import utils.DuplicateOrderIdException;
 

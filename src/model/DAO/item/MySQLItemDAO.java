@@ -1,5 +1,7 @@
-package model;
+package model.DAO.item;
 
+import model.DAO.item.ItemDAO;
+import model.Item;
 import utils.ConnectDB;
 
 import java.sql.Connection;

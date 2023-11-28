@@ -1,5 +1,8 @@
 package model;
 
+import model.DAO.DAOFactory;
+import model.DAO.MySQLDAOFactory;
+
 import java.util.ArrayList;
 
 public class Data
@@ -26,6 +29,16 @@ public class Data
         return itemList;
     }
 
+    public Item getItemByCode(String code) {
+        ArrayList<Item> itemList = daoFactory.createItemDAO().listItems();
+        for(Item item: itemList){
+            if(item.getCode().equalsIgnoreCase(code)){
+                return item;
+            }
+        }
+        return null;
+    }
+
     // Customer methods
     public void saveCustomer(String name, String address, String nif, String email, boolean isPremium) {
         if (isPremium) {
@@ -40,6 +53,16 @@ public class Data
         return customerList;
     }
 
+    public Customer getCustomerByEmail(String email) {
+        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listCustomers();
+        for(Customer customer: customerList){
+            if(customer.getEmail().equalsIgnoreCase(email)){
+                return customer;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<Customer> getPremiumCustomerList() {
         ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listPremiumCustomers();
         return customerList;
@@ -50,12 +73,37 @@ public class Data
         return customerList;
     }
 
+    // Order methods
     public void saveOrder(Customer customer, Item item, int quantity){
         daoFactory.createOrderDAO().saveOrder(customer, item, quantity);
     }
 
     public ArrayList<Order> getOrdersListDAO(){
-        ArrayList<Order> ordersList = daoFactory.createOrderDAO().listOrders();
-        return ordersList;
+        ArrayList<Order> orderList = daoFactory.createOrderDAO().listOrders();
+        return orderList;
+    }
+
+    public ArrayList<Order> getPendingOrdersListDAO(){
+        ArrayList<Order> pendingOrderList = daoFactory.createOrderDAO().getPendingOrders();
+        return pendingOrderList;
+    }
+
+    public ArrayList<Order> getPendingOrdersByCustomerListDAO(Customer c){
+        ArrayList<Order> pendingOrderByCustomerList = daoFactory.createOrderDAO().getPendingOrdersByCustomer(c);
+        return pendingOrderByCustomerList;
+    }
+
+    public ArrayList<Order> getSentOrdersListDAO(){
+        ArrayList<Order> sentOrderList = daoFactory.createOrderDAO().getSentOrders();
+        return sentOrderList;
+    }
+
+    public ArrayList<Order> getSentOrdersByCustomerListDAO(Customer c){
+        ArrayList<Order> sentOrderByCustomerList = daoFactory.createOrderDAO().getSentOrdersByCustomer(c);
+        return sentOrderByCustomerList;
+    }
+
+    public void deleteOrder(String id) {
+        daoFactory.createOrderDAO().deleteOrder(id);
     }
 }
