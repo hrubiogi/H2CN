@@ -173,7 +173,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
                             String nif = resultSet.getString("nif");
                             String email = resultSet.getString("email");
 
-                            PremiumCustomer c = new PremiumCustomer(name, address, nif, email);
+                            StandardCustomer c = new StandardCustomer(name, address, nif, email);
                             stdCustomerList.add(c);
                         }
                     }
