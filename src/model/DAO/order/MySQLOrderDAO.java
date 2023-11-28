@@ -138,11 +138,13 @@ public class MySQLOrderDAO implements OrderDAO {
                 System.out.println("Conectado con éxito");
 
                 // Declaración SQL
-                String sql = "DELETE FROM orders WHERE id = ?";
+                String sql = "DELETE orders FROM orders " +
+                        "JOIN items ON items.code = orders.itemCode " +
+                        "WHERE orders.id = ? AND (NOW() > DATE_ADD(orders.date, INTERVAL items.prepTime MINUTE))";
 
                 try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                     //Establecer el valor del parámetro
-                    preparedStatement.setString(2, orderId);
+                    preparedStatement.setString(1, orderId);
 
                     // Ejecutar la declaración SQL
                     int rowsUpdated = preparedStatement.executeUpdate();
@@ -178,12 +180,11 @@ public class MySQLOrderDAO implements OrderDAO {
                     "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
-                    "o.date AS order_date, " +
-                    "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
+                    "o.date AS order_date " +
                     "FROM orders o " +
                     "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
-                    "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date";
+                    "WHERE (NOW() < DATE_ADD(o.date, INTERVAL i.prepTime MINUTE))";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 ResultSet resultSet = statement.executeQuery();
@@ -218,11 +219,10 @@ public class MySQLOrderDAO implements OrderDAO {
                             resultSet.getInt("item_prep_time")
                     );
 
-                    Order order = new Order(
-                            (customer_p != null) ? customer_p : customer_s,
-                            item,
-                            resultSet.getInt("quantity")
-                    );
+//                    Timestamp time = new Timestamp(resultSet.getLong("order_date"));
+
+                    Order order = new Order((customer_p != null) ? customer_p : customer_s, item, resultSet.getInt("quantity"), resultSet.getString("order_id"), resultSet.getTimestamp("order_date").toLocalDateTime());
+
                     ordersList.add(order);
                 }
 
@@ -255,12 +255,11 @@ public class MySQLOrderDAO implements OrderDAO {
                     "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
-                    "o.date AS order_date, " +
-                    "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
+                    "o.date AS order_date " +
                     "FROM orders o " +
                     "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
-                    "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date " +
+                    "WHERE (NOW() < DATE_ADD(o.date, INTERVAL i.prepTime MINUTE)) " +
                     "AND c.email = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -297,11 +296,8 @@ public class MySQLOrderDAO implements OrderDAO {
                             resultSet.getInt("item_prep_time")
                     );
 
-                    Order order = new Order(
-                            (customer_p != null) ? customer_p : customer_s,
-                            item,
-                            resultSet.getInt("quantity")
-                    );
+                    Order order = new Order((customer_p != null) ? customer_p : customer_s, item, resultSet.getInt("quantity"), resultSet.getString("order_id"), resultSet.getTimestamp("order_date").toLocalDateTime());
+
                     ordersList.add(order);
                 }
 
@@ -334,12 +330,11 @@ public class MySQLOrderDAO implements OrderDAO {
                     "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
-                    "o.date AS order_date, " +
-                    "(UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date AS is_shipped " +
+                    "o.date AS order_date " +
                     "FROM orders o " +
                     "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
-                    "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date " +
+                    "WHERE (NOW() > DATE_ADD(o.date, INTERVAL i.prepTime MINUTE))" +
                     "AND c.email = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, customer.getEmail());
@@ -371,11 +366,8 @@ public class MySQLOrderDAO implements OrderDAO {
                             resultSet.getFloat("item_shipping_cost"),
                             resultSet.getInt("item_prep_time")
                     );
-                    Order order = new Order(
-                            (customer_p != null) ? customer_p : customer_s,
-                            item,
-                            resultSet.getInt("quantity")
-                    );
+                    Order order = new Order((customer_p != null) ? customer_p : customer_s, item, resultSet.getInt("quantity"), resultSet.getString("order_id"), resultSet.getTimestamp("order_date").toLocalDateTime());
+
                     ordersList.add(order);
                 }
             }
@@ -386,7 +378,6 @@ public class MySQLOrderDAO implements OrderDAO {
         }
         return ordersList;
     }
-
 
     @Override
     public ArrayList<Order> getSentOrders() {
@@ -406,12 +397,11 @@ public class MySQLOrderDAO implements OrderDAO {
                     "i.prepTime AS item_prep_time, " +
                     "o.quantity AS quantity, " +
                     "(i.price * o.quantity + i.shippingCost) AS full_price, " +
-                    "o.date AS order_date, " +
-                    "(UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date AS is_shipped " +
+                    "o.date AS order_date " +
                     "FROM orders o " +
                     "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
-                    "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date ";
+                    "WHERE (NOW() > DATE_ADD(o.date, INTERVAL i.prepTime MINUTE))";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 ResultSet resultSet = statement.executeQuery();
@@ -443,11 +433,8 @@ public class MySQLOrderDAO implements OrderDAO {
                             resultSet.getFloat("item_shipping_cost"),
                             resultSet.getInt("item_prep_time")
                     );
-                    Order order = new Order(
-                            (customer_p != null) ? customer_p : customer_s,
-                            item,
-                            resultSet.getInt("quantity")
-                    );
+                    Order order = new Order((customer_p != null) ? customer_p : customer_s, item, resultSet.getInt("quantity"), resultSet.getString("order_id"), resultSet.getTimestamp("order_date").toLocalDateTime());
+
                     ordersList.add(order);
                 }
             }
