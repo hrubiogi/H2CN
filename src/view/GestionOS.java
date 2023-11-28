@@ -123,7 +123,7 @@ public class GestionOS
                             break;
                         case '3':
                             ArrayList<Order> sentOrders = showSentOrdersHandler();
-                            if (pendingOrders.isEmpty()) {
+                            if (sentOrders.isEmpty()) {
                                 System.out.println("\nNo se han encontrado pedidos enviados");
                             } else {
                                 System.out.println("\n<----------Pedidos enviados---------->");
