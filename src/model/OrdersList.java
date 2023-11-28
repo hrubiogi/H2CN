@@ -16,15 +16,7 @@ public class OrdersList extends List<Order>
         System.out.println(getList());
     }
 
-    private boolean isOrderIdInUse(String orderId) {
-        ArrayList<Order> orders = getList();
-        for (Order order : orders) {
-            if (order.getId().equals(orderId)) {
-                return true; // El ID ya está en uso
-            }
-        }
-        return false; // El ID no está en uso
-    }
+
     public void saveOrder(Customer customer, Item item, int quantity) {
 
             try {

@@ -2,7 +2,9 @@ package model;
 
 import utils.DuplicateOrderIdException;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 public class Order
@@ -38,6 +40,32 @@ public class Order
         this.item = item;
         this.quantity = quantity;
         this.date = LocalDateTime.now();
+    }
+
+    public Order(Customer customer, Item item, int quantity, String id, LocalDateTime date) throws DuplicateOrderIdException {
+        /*lanzamiento de excepciones para controlar que los atributos tengan el formato correcto o no puedan
+        ser nulos al crear una instancia del objeto Order*/
+        /*IllegalArgumentException Si el cliente o el artículo son nulos, o si la cantidad del
+         artículo es < 1 */
+        if(customer == null){
+
+            throw new IllegalArgumentException("El cliente no puede ser nulo");
+        }
+
+        if (item == null){
+
+            throw new IllegalArgumentException("El articulo no puede ser nulo");
+        }
+
+        if (quantity < 1){
+
+            throw new IllegalArgumentException("Cantidad del artículo incorrecta para poder hacer un pedido. (menor que 1)");
+        }
+        this.id = id;//se genera de forma automática con el método getUniqueId() y randomUUID (36 caracteres)
+        this.customer = customer;
+        this.item = item;
+        this.quantity = quantity;
+        this.date = date;
     }
     public String getId()
     {
@@ -129,6 +157,8 @@ public class Order
                 "id: " + id + '\n' +
                 "customer NIF: " + customer.getNif() + '\n' +
                 "customer name: " + customer.getName() + '\n' +
+                "customer email: " + customer.getEmail() + '\n' +
+                "customer address: " + customer.getAddress() + '\n' +
                 "item code: " + item.getCode() + '\n' +
                 "item description: " + item.getDescription() + '\n' +
                 "item price: " + item.getPrice() + '\n' +

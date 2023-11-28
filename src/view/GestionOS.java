@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Scanner;
 import model.Customer;
 import model.Item;
+import model.Order;
+import utils.DuplicateOrderIdException;
 import utils.ValueIsEmptyException;
 
 public class GestionOS
@@ -17,6 +19,9 @@ public class GestionOS
     Controller controller = new Controller();
 
 
+    /**
+     * 
+     */
     void menu() {
         boolean leave = false;
         char action;
@@ -39,7 +44,10 @@ public class GestionOS
                             addItemHandler();
                             break;
                         case '2':
-                            controller.getData().getItemsList().getItems();
+                            ArrayList<Item> itemList = controller.getData().getItemListDAO();
+                            System.out.println("\n<------------Lista de Artículos------------->");
+                            System.out.println(itemList);
+                            System.out.println("<----------------------------->");
                             break;
                         case '0':
                             break;
@@ -58,13 +66,34 @@ public class GestionOS
                             addCustomerHandler(null);
                             break;
                         case '2':
-                            controller.getData().getCustomersList().getCustomers();
+                            ArrayList<Customer> customerList = controller.getData().getCustomerList();
+                            if (customerList.isEmpty()) {
+                                System.out.println("\nNo se han encontrado clientes");
+                            } else {
+                                System.out.println("\n<------------Lista de Clientes------------->");
+                                System.out.println(customerList);
+                                System.out.println("<----------------------------->");
+                            }
                             break;
                         case '3':
-                            controller.getData().getCustomersList().getStdCustomers();
+                            ArrayList<Customer> stdCustomerList = controller.getData().getStdCustomerList();
+                            if (stdCustomerList.isEmpty()) {
+                                System.out.println("\nNo se han encontrado clientes estándar");
+                            } else {
+                                System.out.println("\n<------------Lista de Clientes Estándar------------->");
+                                System.out.println(stdCustomerList);
+                                System.out.println("<----------------------------->");
+                            }
                             break;
                         case '4':
-                            controller.getData().getCustomersList().getPremCustomers();
+                            ArrayList<Customer> premiumCustomerList = controller.getData().getPremiumCustomerList();
+                            if (premiumCustomerList.isEmpty()) {
+                                System.out.println("\nNo se han encontrado clientes premium");
+                            } else {
+                                System.out.println("\n<------------Lista de Clientes Premium------------->");
+                                System.out.println(premiumCustomerList);
+                                System.out.println("<----------------------------->");
+                            }
                             break;
                         case '0':
                             break;
@@ -83,10 +112,24 @@ public class GestionOS
                             addOrderHandler();
                             break;
                         case '2':
-                            showPendingOrdersHandler();
+                            ArrayList<Order> pendingOrders = showPendingOrdersHandler();
+                            if (pendingOrders.isEmpty()) {
+                                System.out.println("\nNo se han encontrado pedidos pendientes");
+                            } else {
+                                System.out.println("\n<---------Pedidos pendientes--------->");
+                                System.out.println(pendingOrders);
+                                System.out.println("<-------------------------------------->");
+                            }
                             break;
                         case '3':
-                            showSentOrdersHandler();
+                            ArrayList<Order> sentOrders = showSentOrdersHandler();
+                            if (sentOrders.isEmpty()) {
+                                System.out.println("\nNo se han encontrado pedidos enviados");
+                            } else {
+                                System.out.println("\n<----------Pedidos enviados---------->");
+                                System.out.println(sentOrders);
+                                System.out.println("<-------------------------------------->");
+                            }
                             break;
                         case '4':
                             deleteOrderHandler();
@@ -199,7 +242,9 @@ public class GestionOS
             float price = Float.parseFloat((askField("Introduzca precio de artículo: ")));
             float shippingCost = Float.parseFloat(askField("Introduzca precio de envío de artículo: "));
             int prepTime = Integer.parseInt(askField("Introduzca tiempo de preparación de artículo: "));
-            controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
+            //controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
+            controller.getData().getDaoFactory().createItemDAO().saveItem(code, description, price, shippingCost, prepTime);
+
         } catch (ValueIsEmptyException e) {
             System.out.println(e.getMessage());
             addItemHandler();
@@ -218,20 +263,22 @@ public class GestionOS
             String nif = askField("Introduzca nif del cliente: ");
             stringIsEmpty(nif);
             String email;
+//            String email = askField("Introduzca email del cliente: ");
+//            System.out.println(email);
+//            stringIsEmpty(email);
             if(emailInput == null){
                 email = askField("Introduzca email del cliente: ");
             }else{
                 email = emailInput;
             }
-            stringIsEmpty(email);
 
-            int isPremium = Integer.parseInt(askField("Presione 1 si se trata de un cliente premium, 0 si es standard: "));
+            int isPremium = Integer.parseInt(askField("Presione 2 si se trata de un cliente premium, 1 si es standard: "));
 
-            if (isPremium != 1) {
-                controller.getData().getCustomersList().saveCustomer(name, address, nif, email, false);
+            if (isPremium == 2) {
+                controller.getData().saveCustomer(name, address, nif, email, true);
 
             } else {
-                controller.getData().getCustomersList().saveCustomer(name, address, nif, email, true);
+                controller.getData().saveCustomer(name, address, nif, email, false);
             }
         } catch (ValueIsEmptyException e) {
             System.out.println(e.getMessage());
@@ -244,68 +291,87 @@ public class GestionOS
         }
     }
 
-    void addOrderHandler () {
-        try {
-            String email = askField("Introduzca email del cliente relacionado al pedido: ");
-            stringIsEmpty(email);
-            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+   void addOrderHandler() {
+    try {
+        // Pedir información para el pedido
+        String email = askField("Introduzca el email del cliente relacionado al pedido: ");
+        stringIsEmpty(email);
+        Customer customer = controller.getData().getCustomerByEmail(email);
 
-            if (customer == null) {
-                addCustomerHandler(email);
-                customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+        if (customer == null) {
+            System.out.println("No se ha encontrado ningún cliente con este e-mail, desea crearlo?");
+            int reuseEmail = Integer.parseInt(askField("Presione 1 si quiere crearlo, 0 si desa volver al menú: "));
+            if (reuseEmail == 0) {
+                return;
             }
-
-            String code = askField("Introduzca código del artículo relacionado al pedido: ");
-            stringIsEmpty(code);
-            Item item = controller.getData().getItemsList().getItemByCode(code);
-
-            while (item == null) {
-                code = askField("Código de artículo incorrecto, vuelva a intentarlo ");
-                item = controller.getData().getItemsList().getItemByCode(code);
-            }
-
-            int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
-            controller.getData().getOrdersList().saveOrder(customer, item, quantity);
-        } catch (ValueIsEmptyException e) {
-            System.out.println(e.getMessage());
-            addOrderHandler();
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
-            addItemHandler();
+            addCustomerHandler(email);
+            customer = controller.getData().getCustomerByEmail(email);
         }
+
+        String itemCode = askField("Introduzca el código del artículo relacionado al pedido: ");
+        stringIsEmpty(itemCode);
+        Item item = controller.getData().getItemByCode(itemCode);
+
+        while (item == null) {
+            int returnVar = Integer.parseInt(askField("Presione 1 si quiere volver a introducir un código, 0 si desa volver al menú: "));
+            if (returnVar == 0) {
+                return;
+            }
+            itemCode = askField("Código de artículo incorrecto, vuelva a intentarlo ");
+            item = controller.getData().getItemByCode(itemCode);
+        }
+
+        int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
+
+        controller.getData().saveOrder(customer, item, quantity);
+
+    } catch (ValueIsEmptyException | NumberFormatException e) {
+        System.out.println(e.getMessage());
+        addOrderHandler();
+    } catch (IllegalArgumentException e) {
+        System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
+        addOrderHandler();
+    } catch (DuplicateOrderIdException e) {
+        throw new RuntimeException(e);
     }
+   }
 
     void deleteOrderHandler() {
         String id = askField("Introduzca número de identificación del pedido a eliminar: ");
-        controller.getData().getOrdersList().deleteOrder(id);
+        controller.getData().deleteOrder(id);
     }
 
-    void showPendingOrdersHandler() {
+    ArrayList<Order> showPendingOrdersHandler() {
         String input;
+        ArrayList<Order> pendingOrders = new ArrayList<>();
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos pendientes o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            controller.getData().getOrdersList().getPendingOrders();
+            pendingOrders = controller.getData().getPendingOrdersListDAO();
         } else {
-            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
-            controller.getData().getOrdersList().getPendingOrdersByCustomer(customer);
+            Customer customer = controller.getData().getCustomerByEmail(input);
+            pendingOrders = controller.getData().getPendingOrdersByCustomerListDAO(customer);
         }
+        return pendingOrders;
     }
 
-    void showSentOrdersHandler() {
+    ArrayList<Order> showSentOrdersHandler() {
         String input;
+        ArrayList<Order> sentOrders = new ArrayList<>();
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos enviados o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            controller.getData().getOrdersList().getSentOrders();
+            sentOrders = controller.getData().getSentOrdersListDAO();
         } else {
-            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(input);
-            controller.getData().getOrdersList().getSentOrdersByCustomer(customer);
+            Customer customer = controller.getData().getCustomerByEmail(input);
+            System.out.println(customer);
+            sentOrders = controller.getData().getSentOrdersByCustomerListDAO(customer);
         }
+        return sentOrders;
     }
 }
 

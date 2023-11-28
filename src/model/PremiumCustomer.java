@@ -42,5 +42,10 @@ public class PremiumCustomer extends Customer
         //TBD
     }
 
-
+    @Override
+    public String toString()
+    {
+        return super.toString() +
+                "Tipo: Premium \n";
+    }
 }

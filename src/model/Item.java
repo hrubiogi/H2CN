@@ -77,12 +77,11 @@ public class Item
     @Override
     public String toString()
     {
-        return "<------------Item------------->" + '\n' +
+        return '\n' + "<------------Item------------->" + '\n' +
                 "code: " + code + '\n' +
                 "description: " + description + '\n' +
                 "price: " + price + '\n' +
                 "shippingCost: " + shippingCost + '\n' +
-                "prepTime: " + prepTime + '\n' +
-                " ----------------------------";
+                "prepTime: " + prepTime;
     }
 }
