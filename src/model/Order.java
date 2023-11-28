@@ -130,6 +130,8 @@ public class Order
                 "id: " + id + '\n' +
                 "customer NIF: " + customer.getNif() + '\n' +
                 "customer name: " + customer.getName() + '\n' +
+                "customer email: " + customer.getEmail() + '\n' +
+                "customer address: " + customer.getAddress() + '\n' +
                 "item code: " + item.getCode() + '\n' +
                 "item description: " + item.getDescription() + '\n' +
                 "item price: " + item.getPrice() + '\n' +
