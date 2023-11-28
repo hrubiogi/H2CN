@@ -24,6 +24,11 @@ public class StandardCustomer extends Customer
         //TBD
     }
 
+    public String toString()
+    {
+        return super.toString() +
+                "Tipo: Estándar \n";
+    }
 
 }
 
