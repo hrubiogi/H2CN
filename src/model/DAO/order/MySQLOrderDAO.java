@@ -5,6 +5,8 @@ import utils.ConnectDB;
 import utils.DuplicateOrderIdException;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -111,11 +113,8 @@ public class MySQLOrderDAO implements OrderDAO {
                                     resultSet.getInt("item_prep_time")
                             );
 
-                            Order order = new Order(
-                                    (customer_p != null) ? customer_p : customer_s,
-                                    item,
-                                    resultSet.getInt("quantity")
-                            );
+                            Order order = new Order((customer_p != null) ? customer_p : customer_s, item, resultSet.getInt("quantity"), resultSet.getString("order_id"), resultSet.getDate("order_date").toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+
                             ordersList.add(order);
                         }
                     } catch (DuplicateOrderIdException e) {
