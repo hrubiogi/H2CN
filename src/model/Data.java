@@ -49,4 +49,13 @@ public class Data
         ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listStdCustomers();
         return customerList;
     }
+
+    public void saveOrder(Customer customer, Item item, int quantity){
+        daoFactory.createOrderDAO().saveOrder(customer, item, quantity);
+    }
+
+    public ArrayList<Order> getOrdersListDAO(){
+        ArrayList<Order> ordersList = daoFactory.createOrderDAO().listOrders();
+        return ordersList;
+    }
 }

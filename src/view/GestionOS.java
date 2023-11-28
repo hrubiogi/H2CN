@@ -263,36 +263,60 @@ public class GestionOS
         }
     }
 
-/*    void addOrderHandler () {
+   /* public void addOrderHandler() {
         try {
-            String email = askField("Introduzca email del cliente relacionado al pedido: ");
+            // Pedir información para el pedido
+            String email = askField("Introduzca el email del cliente: ");
             stringIsEmpty(email);
-            Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
 
-            if (customer == null) {
-                addCustomerHandler(email);
-                customer = controller.getData().getCustomersList().getCustomerByEmail(email);
-            }
+            String itemCode = askField("Introduzca el código del producto: ");
+            stringIsEmpty(itemCode);
 
-            String code = askField("Introduzca código del artículo relacionado al pedido: ");
-            stringIsEmpty(code);
-            Item item = controller.getData().getItemsList().getItemByCode(code);
+            int quantity = Integer.parseInt(askField("Introduzca la cantidad: "));
+            // Validar si quantity puede ser 0 o negativo según tus requisitos
 
-            while (item == null) {
-                code = askField("Código de artículo incorrecto, vuelva a intentarlo ");
-                item = controller.getData().getItemsList().getItemByCode(code);
-            }
-
-            int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
-            controller.getData().getOrdersList().saveOrder(customer, item, quantity);
-        } catch (ValueIsEmptyException e) {
+            // Guardar el pedido utilizando el nombre del cliente y el código del artículo
+            controller.getData().saveOrder(email, itemCode, quantity);
+        } catch (ValueIsEmptyException | NumberFormatException e) {
             System.out.println(e.getMessage());
             addOrderHandler();
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
-            addItemHandler();
         }
     }
+
+/*   void addOrderHandler() {
+    try {
+        // Pedir información para el pedido
+        String email = askField("Introduzca el email del cliente relacionado al pedido: ");
+        stringIsEmpty(email);
+        Customer customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+
+        if (customer == null) {
+            addCustomerHandler(email);
+            customer = controller.getData().getCustomersList().getCustomerByEmail(email);
+        }
+
+        String itemCode = askField("Introduzca el código del artículo relacionado al pedido: ");
+        stringIsEmpty(itemCode);
+        Item item = controller.getData().getItemsList().getItemByCode(itemCode);
+
+        while (item == null) {
+            itemCode = askField("Código de artículo incorrecto, vuelva a intentarlo ");
+            item = controller.getData().getItemsList().getItemByCode(itemCode);
+        }
+
+        int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
+
+        // Guardar el pedido utilizando el método saveOrder
+        controller.getData().getOrdersList().saveOrder(customer, item, quantity);
+
+    } catch (ValueIsEmptyException | NumberFormatException e) {
+        System.out.println(e.getMessage());
+        addOrderHandler();
+    } catch (IllegalArgumentException e) {
+        System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
+        addOrderHandler();
+    }
+}
 
     void deleteOrderHandler() {
         String id = askField("Introduzca número de identificación del pedido a eliminar: ");

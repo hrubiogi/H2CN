@@ -12,4 +12,9 @@ public class MySQLDAOFactory implements DAOFactory {
         return new MySQLCustomerDAO();
     }
 
+    @Override
+    public OrderDAO createOrderDAO(){
+        return new MySQLOrderDAO();
+    }
+
 }
