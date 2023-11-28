@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public interface OrderDAO {
 
-    public void saveOrder(Customer customer, Item item, int quantity);
+    public void saveOrder(Customer customer, Item item, Order order);
 
     ArrayList<Order> listOrders();
 

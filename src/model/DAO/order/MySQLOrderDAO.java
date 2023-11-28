@@ -11,7 +11,7 @@ import java.util.Objects;
 public class MySQLOrderDAO implements OrderDAO {
 
     @Override
-    public void saveOrder(Customer customer, Item item, int quantity) {
+    public void saveOrder(Customer customer, Item item, Order order) {
         Connection connection = null;
         try {
             connection = ConnectDB.connect();
@@ -21,11 +21,13 @@ public class MySQLOrderDAO implements OrderDAO {
                 // Iniciar la transacción
                 connection.setAutoCommit(false);
 
-                String sql = "INSERT INTO orders (email, itemCode, quantity) VALUES (?, ?, ?)";
+                String sql = "INSERT INTO orders (id, date, quantity, email, itemCode) VALUES (?, ?, ?, ?, ?)";
                 try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                    preparedStatement.setString(1, customer.getEmail());
-                    preparedStatement.setString(2, item.getCode());
-                    preparedStatement.setInt(3, quantity);
+                    preparedStatement.setString(1, order.getId());
+                    preparedStatement.setTimestamp(2, Timestamp.valueOf(order.getDate()));
+                    preparedStatement.setInt(3, order.getQuantity());
+                    preparedStatement.setString(4, customer.getEmail());
+                    preparedStatement.setString(5, item.getCode());
                     preparedStatement.executeUpdate();
 
                     // Confirmar la transacción
@@ -165,8 +167,10 @@ public class MySQLOrderDAO implements OrderDAO {
 
             String sql = "SELECT " +
                     "o.id AS order_id, " +
-                    "c.nif AS customer_nif, " +
-                    "c.name AS customer_name, " +
+                    "cp.nif AS customer_nif, " +
+                    "cs.nif AS customer_nif, " +
+                    "cp.name AS customer_name, " +
+                    "cs.name AS customer_name, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
@@ -176,8 +180,8 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
                     "FROM orders o " +
-                    "LEFT JOIN customers_premium c ON o.email = c.email" +
-                    "LEFT JOIN customers_standard c ON o.email = c.email" +
+                    "LEFT JOIN customers_premium cp ON o.email = cp.email " +
+                    "LEFT JOIN customers_standard cs ON o.email = cs.email " +
                     "JOIN items i ON o.itemCode = i.code " +
                     "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date";
 
@@ -193,14 +197,14 @@ public class MySQLOrderDAO implements OrderDAO {
                         customer_p = new PremiumCustomer(
                                 resultSet.getString("name"),
                                 resultSet.getString("customerAddress"),
-                                resultSet.getString("customerNif"),
+                                resultSet.getString("customer_nif"),
                                 resultSet.getString("customer_email")
                         );
                     } else {
                         customer_s = new StandardCustomer(
                                 resultSet.getString("name"),
                                 resultSet.getString("customerAddress"),
-                                resultSet.getString("customerNif"),
+                                resultSet.getString("customer_nif"),
                                 resultSet.getString("customer_email")
                         );
                     }

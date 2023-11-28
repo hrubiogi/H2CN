@@ -2,6 +2,7 @@ package model;
 
 import model.DAO.DAOFactory;
 import model.DAO.MySQLDAOFactory;
+import utils.DuplicateOrderIdException;
 
 import java.util.ArrayList;
 
@@ -74,8 +75,9 @@ public class Data
     }
 
     // Order methods
-    public void saveOrder(Customer customer, Item item, int quantity){
-        daoFactory.createOrderDAO().saveOrder(customer, item, quantity);
+    public void saveOrder(Customer customer, Item item, int quantity) throws DuplicateOrderIdException {
+        Order newOrder = new Order(customer, item, quantity);
+        daoFactory.createOrderDAO().saveOrder(customer, item, newOrder);
     }
 
     public ArrayList<Order> getOrdersListDAO(){

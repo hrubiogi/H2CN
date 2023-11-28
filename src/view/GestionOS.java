@@ -8,6 +8,7 @@ import java.util.Scanner;
 import model.Customer;
 import model.Item;
 import model.Order;
+import utils.DuplicateOrderIdException;
 import utils.ValueIsEmptyException;
 
 public class GestionOS
@@ -302,7 +303,7 @@ public class GestionOS
 
         int quantity = Integer.parseInt(askField("Introduzca la cantidad de artículos del pedido: "));
 
-        controller.getData().getDaoFactory().createOrderDAO().saveOrder(customer, item, quantity);
+        controller.getData().saveOrder(customer, item, quantity);
 
     } catch (ValueIsEmptyException | NumberFormatException e) {
         System.out.println(e.getMessage());
@@ -310,12 +311,14 @@ public class GestionOS
     } catch (IllegalArgumentException e) {
         System.out.println("Ha introducido un valor incorrecto, vuelva a intentarlo");
         addOrderHandler();
+    } catch (DuplicateOrderIdException e) {
+        throw new RuntimeException(e);
     }
-}
+   }
 
     void deleteOrderHandler() {
         String id = askField("Introduzca número de identificación del pedido a eliminar: ");
-        controller.getData().getDaoFactory().createOrderDAO().deleteOrder(id);
+        controller.getData().deleteOrder(id);
     }
 
     ArrayList<Order> showPendingOrdersHandler() {
@@ -326,10 +329,10 @@ public class GestionOS
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            pendingOrders = controller.getData().getDaoFactory().createOrderDAO().getPendingOrders();
+            pendingOrders = controller.getData().getPendingOrdersListDAO();
         } else {
             Customer customer = controller.getData().getCustomerByEmail(input);
-            pendingOrders = controller.getData().getDaoFactory().createOrderDAO().getPendingOrdersByCustomer(customer);
+            pendingOrders = controller.getData().getPendingOrdersByCustomerListDAO(customer);
         }
         return pendingOrders;
     }
@@ -342,10 +345,10 @@ public class GestionOS
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            sentOrders = controller.getData().getDaoFactory().createOrderDAO().getSentOrders();
+            sentOrders = controller.getData().getSentOrdersListDAO();
         } else {
             Customer customer = controller.getData().getCustomerByEmail(input);
-            sentOrders = controller.getData().getDaoFactory().createOrderDAO().getPendingOrdersByCustomer(customer);
+            sentOrders = controller.getData().getSentOrdersByCustomerListDAO(customer);
         }
         return sentOrders;
     }
