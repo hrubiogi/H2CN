@@ -18,7 +18,6 @@ public class MySQLOrderDAO implements OrderDAO {
         try {
             connection = ConnectDB.connect();
             if (connection != null) {
-                System.out.println("Conectado con éxito");
 
                 // Iniciar la transacción
                 connection.setAutoCommit(false);
@@ -56,14 +55,11 @@ public class MySQLOrderDAO implements OrderDAO {
         }
     }
 
-
-
     @Override
     public ArrayList<Order> listOrders() {
         ArrayList<Order> ordersList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {
             if (connection != null) {
-                System.out.println("Conectado con éxito");
 
                 String sql = "SELECT " +
                         "o.id AS order_id" +
@@ -130,12 +126,10 @@ public class MySQLOrderDAO implements OrderDAO {
         return ordersList;
     }
 
-
     @Override
     public void deleteOrder(String orderId) {
         try (Connection connection = ConnectDB.connect()) {
             if (connection != null) {
-                System.out.println("Conectado con éxito");
 
                 // Declaración SQL
                 String sql = "DELETE orders FROM orders " +
