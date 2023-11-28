@@ -67,6 +67,7 @@ public class MySQLOrderDAO implements OrderDAO {
                         "o.id AS order_id" +
                         "c.nif AS customer_nif" +
                         "c.name AS customer_name" +
+                        "c.type AS customer_type" +
                         "i.code AS item_code" +
                         "i.description AS item_description" +
                         "i.price AS item_price" +
@@ -76,8 +77,7 @@ public class MySQLOrderDAO implements OrderDAO {
                         "o.date AS order_date" +
                         "(UNIX_TIMESTAMP() + (i.prepTime * 60)) > o.date AS is_sent" +
                 "FROM  orders o"+
-                        "LEFT JOIN customers_premium c ON o.email = c.email" +
-                        "LEFT JOIN customers_standard c ON o.email = c.email" +
+                        "JOIN customers c ON o.email = c.email" +
                         "JOIN items i ON o.itemCode = i.code ";
 
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -167,10 +167,9 @@ public class MySQLOrderDAO implements OrderDAO {
 
             String sql = "SELECT " +
                     "o.id AS order_id, " +
-                    "cp.nif AS customer_nif, " +
-                    "cs.nif AS customer_nif, " +
-                    "cp.name AS customer_name, " +
-                    "cs.name AS customer_name, " +
+                    "c.nif AS customer_nif, " +
+                    "c.name AS customer_name, " +
+                    "c.type AS customer_type, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
@@ -180,8 +179,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
                     "FROM orders o " +
-                    "LEFT JOIN customers_premium cp ON o.email = cp.email " +
-                    "LEFT JOIN customers_standard cs ON o.email = cs.email " +
+                    "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
                     "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date";
 
@@ -245,6 +243,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
+                    "c.type  AS customer_type, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
@@ -254,8 +253,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date AS is_pending " +
                     "FROM orders o " +
-                    "LEFT JOIN customers_premium c ON o.email = c.email" +
-                    "LEFT JOIN customers_standard c ON o.email = c.email" +
+                    "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
                     "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) < o.date " +
                     "AND c.email = ?";
@@ -321,6 +319,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
+                    "c.type AS customer_type " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
@@ -330,8 +329,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date AS is_shipped " +
                     "FROM orders o " +
-                    "LEFT JOIN customers_premium c ON o.email = c.email" +
-                    "LEFT JOIN customers_standard c ON o.email = c.email" +
+                    "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
                     "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date " +
                     "AND c.email = ?";
@@ -388,6 +386,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.id AS order_id, " +
                     "c.nif AS customer_nif, " +
                     "c.name AS customer_name, " +
+                    "c.type AS customer_type, " +
                     "i.code AS item_code, " +
                     "i.description AS item_description, " +
                     "i.price AS item_price, " +
@@ -397,8 +396,7 @@ public class MySQLOrderDAO implements OrderDAO {
                     "o.date AS order_date, " +
                     "(UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date AS is_shipped " +
                     "FROM orders o " +
-                    "LEFT JOIN customers_premium c ON o.email = c.email" +
-                    "LEFT JOIN customers_standard c ON o.email = c.email" +
+                    "JOIN customers c ON o.email = c.email " +
                     "JOIN items i ON o.itemCode = i.code " +
                     "WHERE (UNIX_TIMESTAMP() + (i.prepTime * 60)) >= o.date ";
 
