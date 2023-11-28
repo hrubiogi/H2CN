@@ -460,8 +460,4 @@ public class MySQLOrderDAO implements OrderDAO {
         }
         return ordersList;
     }
-
-
-
-
 }
