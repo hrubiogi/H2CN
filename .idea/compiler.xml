@@ -9,8 +9,5 @@
         <module name="H2CN" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="H2CN" target="19" />
-    </bytecodeTargetLevel>
   </component>
 </project>

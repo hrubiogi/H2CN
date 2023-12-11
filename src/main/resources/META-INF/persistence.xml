@@ -6,7 +6,11 @@
 
     <persistence-unit name="MyH2CNPersistenceUnit">
         <class>model.Item</class>
-        <!-- TODO: classes -->
+        <class>model.Customer</class>
+        <class>model.StandardCustomer</class>
+        <class>model.PremiumCustomer</class>
+        <class>model.Order</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <!-- Configure the data source -->

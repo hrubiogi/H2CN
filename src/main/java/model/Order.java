@@ -1,5 +1,7 @@
 package model;
 
+import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 import utils.DuplicateOrderIdException;
 
 import java.sql.Timestamp;
@@ -7,11 +9,23 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
+@Entity
+@Table(name = "orders")
 public class Order
 {
+    @Id
+    //@GeneratedValue(generator = "uuid2")
+   //@GenericGenerator(name = "uudi2",strategy = "uuid2")
     private String id;
+    @ManyToOne
+    @JoinColumn(name = "email", referencedColumnName = "email")
     private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "itemCode", referencedColumnName = "code")
     private Item item;
+
+    @Column(name = "quantity")
     private int quantity;
     private LocalDateTime date;
 
@@ -67,6 +81,10 @@ public class Order
         this.quantity = quantity;
         this.date = date;
     }
+
+    public Order() {
+    }
+
     public String getId()
     {
         return  id;

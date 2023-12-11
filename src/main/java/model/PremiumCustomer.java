@@ -1,9 +1,16 @@
 package model;
 
+import javax.persistence.*;
+
+@Entity
+@DiscriminatorValue("2")
 public class PremiumCustomer extends Customer
 {
     private static final float ShippingDisc = 0.2F;
     private static final float YearMemb = 9.9F;
+
+    public PremiumCustomer() {
+    }
 
     public static float getShippingDisc()
     {

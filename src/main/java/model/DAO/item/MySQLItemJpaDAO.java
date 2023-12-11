@@ -94,7 +94,7 @@ public class MySQLItemJpaDAO {
         Item newItem = new Item("A4", "Example Item", 10.0f, 2.0f, 30);
 
         // Save the item to the database
-        //itemJpaDao.saveItem(newItem);
+        itemJpaDao.saveItem(newItem);
 
         // Delete
         //itemJpaDao.deleteItemById("A4");
