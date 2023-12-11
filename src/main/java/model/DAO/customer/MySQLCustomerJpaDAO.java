@@ -67,13 +67,14 @@ public class MySQLCustomerJpaDAO {
         EntityManager entityManager = emFactory.createEntityManager();
 
         try {
-            Query query = entityManager.createQuery("SELECT c FROM model.Customer c", Customer.class);
+            Query query = entityManager.createQuery("SELECT c FROM Customer c", Customer.class);
+            return query.getResultList();
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();
             }
         }
-        return null;
+
     }
 
 
