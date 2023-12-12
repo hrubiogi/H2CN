@@ -10,9 +10,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MySQLOrderDAO implements OrderDAO {
+public class MySQLOrderDAO {
 
-    @Override
     public void saveOrder(Customer customer, Item item, Order order) {
         Connection connection = null;
         try {
@@ -55,7 +54,7 @@ public class MySQLOrderDAO implements OrderDAO {
         }
     }
 
-    @Override
+
     public ArrayList<Order> listOrders() {
         ArrayList<Order> ordersList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {
@@ -126,7 +125,7 @@ public class MySQLOrderDAO implements OrderDAO {
         return ordersList;
     }
 
-    @Override
+
     public void deleteOrder(String orderId) {
         try (Connection connection = ConnectDB.connect()) {
             if (connection != null) {
@@ -230,7 +229,7 @@ public class MySQLOrderDAO implements OrderDAO {
         return ordersList;
     }
 
-    @Override
+
     public ArrayList<Order> getPendingOrdersByCustomer(Customer customer) {
         ArrayList<Order> ordersList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {
@@ -305,7 +304,7 @@ public class MySQLOrderDAO implements OrderDAO {
         return ordersList;
     }
 
-    @Override
+
     public ArrayList<Order> getSentOrdersByCustomer(Customer customer) {
         ArrayList<Order> ordersList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {
@@ -373,7 +372,7 @@ public class MySQLOrderDAO implements OrderDAO {
         return ordersList;
     }
 
-    @Override
+
     public ArrayList<Order> getSentOrders() {
         ArrayList<Order> ordersList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {

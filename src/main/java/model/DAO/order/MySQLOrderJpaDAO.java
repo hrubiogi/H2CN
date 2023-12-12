@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Queue;
 
-public class MySQLOrderJpaDAO {
+public class MySQLOrderJpaDAO implements OrderDAO{
 
     private static final String PERSISTENCE_UNIT_NAME = "MyH2CNPersistenceUnit";
 
@@ -19,12 +19,13 @@ public class MySQLOrderJpaDAO {
         emFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     }
 
-    public void closeEntityManagerFactory() {
+    private void closeEntityManagerFactory() {
         if (emFactory != null && emFactory.isOpen()) {
             emFactory.close();
         }
     }
 
+    @Override
     public void saveOrder(Order order) {
         EntityManager entityManager = emFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -40,9 +41,11 @@ public class MySQLOrderJpaDAO {
             e.printStackTrace();
         } finally {
             entityManager.close();
+            this.closeEntityManagerFactory();
         }
     }
 
+    @Override
     public List<Order> getOrders() {
         EntityManager entityManager = emFactory.createEntityManager();
 
@@ -53,85 +56,87 @@ public class MySQLOrderJpaDAO {
         } finally {
             if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();
+                this.closeEntityManagerFactory();
             }
         }
     }
 
+    @Override
     public List<Order> getPendingOrders() {
         EntityManager entityManager = emFactory.createEntityManager();
 
         try {
-
-            Query query = entityManager.createQuery("SELECT o FROM Order o JOIN Item i ON o.itemCode = i.code WHERE (o.date + i.prepTime) < :now", Order.class);
-            query.setParameter("now", LocalDateTime.now());
-
+            Query query = entityManager.createQuery("SELECT o FROM Order o JOIN o.item i WHERE FUNCTION('TIMESTAMPADD', MINUTE, i.prepTime, o.date) > CURRENT_TIMESTAMP", Order.class);
             return query.getResultList();
         } finally {
-            if (entityManager != null && entityManager.isOpen()) {
                 entityManager.close();
-            }
+                this.closeEntityManagerFactory();
         }
     }
 
-
-    public List<Order> getPendingOrdersByCustomerEmail(Customer customer) {
+    @Override
+    public List<Order> getPendingOrdersByCustomer(Customer customer) {
         EntityManager entityManager = emFactory.createEntityManager();
 
         try {
-
-            // añadir tiempo en Java
             Query query = entityManager.createQuery(
-                    "SELECT o FROM Order o JOIN o.customer c WHERE c.email = :customerEmail AND o.date < :now"
+                    "SELECT o FROM Order o JOIN o.item i WHERE FUNCTION('TIMESTAMPADD', MINUTE, i.prepTime, o.date) > CURRENT_TIMESTAMP AND o.customer = :targetCustomer"
                     , Order.class);
 
-            query.setParameter("customerEmail", customer.getEmail());
-            query.setParameter("now", LocalDateTime.now());
+            query.setParameter("targetCustomer", customer);
 
             return query.getResultList();
         } finally {
             entityManager.close();
+            this.closeEntityManagerFactory();
         }
     }
 
+    @Override
     public List<Order> getSentOrders() {
         EntityManager entityManager = emFactory.createEntityManager();
 
         try {
-            LocalDateTime now = LocalDateTime.now();
-
-            Query query = entityManager.createQuery("SELECT o FROM Orders JOIN o.itemCode i WHERE :now < FUNCTION('DATE_ADD', 'MINUTE', o.date, i.preptime",
-                    Order.class);
-
-            query.setParameter("now", now);
+            Query query = entityManager.createQuery("SELECT o FROM Order o JOIN o.item i WHERE FUNCTION('TIMESTAMPADD', MINUTE, i.prepTime, o.date) < CURRENT_TIMESTAMP", Order.class);
             return query.getResultList();
-
         } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
-            }
-
+            entityManager.close();
+            this.closeEntityManagerFactory();
         }
     }
 
+    @Override
     public List<Order> getSentOrdersByCustomer(Customer customer) {
         EntityManager entityManager = emFactory.createEntityManager();
 
         try {
-            LocalDateTime now = LocalDateTime.now();
-            Query query = entityManager.createQuery("SELECT o FROM Order o JOIN o.itemCode i WHERE o.email :customerEmail AND :now < FUNCTION('DATE_ADD', 'MINUTE', o.date, i.prepTime)"
+            Query query = entityManager.createQuery(
+                    "SELECT o FROM Order o JOIN o.item i WHERE FUNCTION('TIMESTAMPADD', MINUTE, i.prepTime, o.date) < CURRENT_TIMESTAMP AND o.customer = :targetCustomer"
                     , Order.class);
 
-            query.setParameter("customerEmail", customer.getEmail());
-            query.setParameter("now", now);
+            query.setParameter("targetCustomer", customer);
 
             return query.getResultList();
         } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
-            }
+            entityManager.close();
+            this.closeEntityManagerFactory();
         }
     }
 
+    @Override
+    public Order getOrderById(String id) {
+        EntityManager entityManager = emFactory.createEntityManager();
+
+        try {
+            Order order = entityManager.find(Order.class, id);
+            return order;
+        } finally {
+            entityManager.close();
+            this.closeEntityManagerFactory();
+        }
+    }
+
+    @Override
     public void deleteOrder(String orderId) {
         EntityManager entityManager = emFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -153,31 +158,9 @@ public class MySQLOrderJpaDAO {
             }
             e.printStackTrace();
         } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
-            }
+            entityManager.close();
+            this.closeEntityManagerFactory();
         }
     }
-
-    public static void main(String[] args) throws DuplicateOrderIdException {
-
-        MySQLOrderJpaDAO mySQLOrderJpaDAO = new MySQLOrderJpaDAO();
-        Customer customer_s = new StandardCustomer("n", "n", "123", "cs@gmail.com");
-        Item newItem = new Item("A4", "Example Item", 10.0f, 2.0f, 1);
-        Order order1 = new Order(customer_s, newItem, 3);
-
-        //mySQLOrderJpaDAO.saveOrder(order1);
-
-        //List<Order> orders = mySQLOrderJpaDAO.getOrders();
-        List<Order> pendingOrders = mySQLOrderJpaDAO.getPendingOrders();
-        //List<Order> pendingOrdersByCustomer = mySQLOrderJpaDAO.getPendingOrdersByCustomerEmail(customer_s);
-        System.out.println(pendingOrders);
-
-       // System.out.println(orders);
-
-        mySQLOrderJpaDAO.closeEntityManagerFactory();
-
-    }
-
 }
 

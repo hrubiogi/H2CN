@@ -4,7 +4,9 @@ import model.DAO.DAOFactory;
 import model.DAO.MySQLDAOFactory;
 import utils.DuplicateOrderIdException;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Data
 {
@@ -22,86 +24,84 @@ public class Data
 
     // Item methods
     public void saveItem(String code, String description, float price, float shippingCost, int prepTime) {
-        daoFactory.createItemDAO().saveItem(code, description, price, shippingCost, prepTime);
+        Item newItem = new Item(code, description, price, shippingCost, prepTime);
+        daoFactory.createItemDAO().saveItem(newItem);
     }
 
-    public ArrayList<Item> getItemListDAO() {
-        ArrayList<Item> itemList = daoFactory.createItemDAO().listItems();
+    public List<Item> getItemList() {
+        List<Item> itemList = daoFactory.createItemDAO().listItems();
         return itemList;
     }
 
     public Item getItemByCode(String code) {
-        ArrayList<Item> itemList = daoFactory.createItemDAO().listItems();
-        for(Item item: itemList){
-            if(item.getCode().equalsIgnoreCase(code)){
-                return item;
-            }
-        }
-        return null;
+        Item item = daoFactory.createItemDAO().getItem(code);
+        return item;
     }
 
     // Customer methods
     public void saveCustomer(String name, String address, String nif, String email, boolean isPremium) {
+        Customer customer;
         if (isPremium) {
-            daoFactory.createCustomerDAO().savePremCustomer(name, address, nif, email);
+            customer = new PremiumCustomer(name, address, nif, email);
         } else {
-            daoFactory.createCustomerDAO().saveStdCustomer(name, address, nif, email);
+            customer = new StandardCustomer(name, address, nif, email);
         }
-
+        daoFactory.createCustomerDAO().saveCustomer(customer);
     }
-    public ArrayList<Customer> getCustomerList() {
-        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listCustomers();
+
+    public List<Customer> getCustomerList() {
+        List<Customer> customerList = daoFactory.createCustomerDAO().listCustomers();
         return customerList;
     }
 
     public Customer getCustomerByEmail(String email) {
-        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listCustomers();
-        for(Customer customer: customerList){
-            if(customer.getEmail().equalsIgnoreCase(email)){
-                return customer;
-            }
-        }
-        return null;
+        Customer customer = daoFactory.createCustomerDAO().getCustomerByEmail(email);
+        return customer;
     }
 
-    public ArrayList<Customer> getPremiumCustomerList() {
-        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listPremiumCustomers();
+    public List<Customer> getPremiumCustomerList() {
+        List<Customer> customerList = daoFactory.createCustomerDAO().listPremiumCustomers();
         return customerList;
     }
 
-    public ArrayList<Customer> getStdCustomerList() {
-        ArrayList<Customer> customerList = daoFactory.createCustomerDAO().listStdCustomers();
+    public List<Customer> getStdCustomerList() {
+        List<Customer> customerList = daoFactory.createCustomerDAO().listStdCustomers();
         return customerList;
     }
 
     // Order methods
     public void saveOrder(Customer customer, Item item, int quantity) throws DuplicateOrderIdException {
         Order newOrder = new Order(customer, item, quantity);
-        daoFactory.createOrderDAO().saveOrder(customer, item, newOrder);
+        daoFactory.createOrderDAO().saveOrder(newOrder);
     }
 
-    public ArrayList<Order> getOrdersListDAO(){
-        ArrayList<Order> orderList = daoFactory.createOrderDAO().listOrders();
+    public List<Order> getOrdersList(){
+        List<Order> orderList = daoFactory.createOrderDAO().getOrders();
         return orderList;
     }
 
-    public ArrayList<Order> getPendingOrdersListDAO(){
-        ArrayList<Order> pendingOrderList = daoFactory.createOrderDAO().getPendingOrders();
+    public boolean orderIsSent(String id) {
+        Order order = daoFactory.createOrderDAO().getOrderById(id);
+        return order.orderIsSent();
+    }
+
+    public List<Order> getPendingOrdersList(){
+        List<Order> pendingOrderList = daoFactory.createOrderDAO().getPendingOrders();
         return pendingOrderList;
     }
 
-    public ArrayList<Order> getPendingOrdersByCustomerListDAO(Customer c){
-        ArrayList<Order> pendingOrderByCustomerList = daoFactory.createOrderDAO().getPendingOrdersByCustomer(c);
+    public List<Order> getPendingOrdersByCustomerList(Customer c){
+        List<Order> pendingOrderByCustomerList = daoFactory.createOrderDAO().getPendingOrdersByCustomer(c);
         return pendingOrderByCustomerList;
     }
 
-    public ArrayList<Order> getSentOrdersListDAO(){
-        ArrayList<Order> sentOrderList = daoFactory.createOrderDAO().getSentOrders();
+    public List<Order> getSentOrdersList(){
+        List<Order> sentOrderList = daoFactory.createOrderDAO().getSentOrders();
         return sentOrderList;
     }
 
-    public ArrayList<Order> getSentOrdersByCustomerListDAO(Customer c){
-        ArrayList<Order> sentOrderByCustomerList = daoFactory.createOrderDAO().getSentOrdersByCustomer(c);
+    public List<Order> getSentOrdersByCustomerList(Customer c){
+        List<Order> sentOrderByCustomerList = daoFactory.createOrderDAO().getSentOrdersByCustomer(c);
         return sentOrderByCustomerList;
     }
 

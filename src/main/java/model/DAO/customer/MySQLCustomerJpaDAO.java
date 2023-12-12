@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MySQLCustomerJpaDAO {
+public class MySQLCustomerJpaDAO implements CustomerDAO{
 
     private static final String PERSISTENCE_UNIT_NAME = "MyH2CNPersistenceUnit";
     private EntityManagerFactory emFactory;
@@ -19,10 +19,13 @@ public class MySQLCustomerJpaDAO {
         this.emFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     }
 
-    public void closeEntityManagerFactory() {
-        emFactory.close();
+    private void closeEntityManagerFactory() {
+        if (emFactory != null && emFactory.isOpen()) {
+            emFactory.close();
+        }
     }
 
+    @Override
     public void saveCustomer(Customer customer) {
         EntityManager entityManager = emFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -38,9 +41,11 @@ public class MySQLCustomerJpaDAO {
             e.printStackTrace();
         } finally {
             entityManager.close();
+            this.closeEntityManagerFactory();
         }
     }
 
+    @Override
     public Customer getCustomerByEmail(String email) {
         EntityManager entityManager = emFactory.createEntityManager();
 
@@ -59,48 +64,62 @@ public class MySQLCustomerJpaDAO {
 
         } finally {
             entityManager.close();
+            this.closeEntityManagerFactory();
         }
         return null;
     }
 
-    public List<Customer> getCustomers() {
+    @Override
+    public List<Customer> listCustomers() {
         EntityManager entityManager = emFactory.createEntityManager();
 
         try {
             Query query = entityManager.createQuery("SELECT c FROM Customer c", Customer.class);
             return query.getResultList();
+        } catch (Exception e) {
+            // Registra o maneja la excepción según tus necesidades
+            System.err.println("Error al obtener la lista de clientes: " + e.getMessage());
         } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
-            }
+            entityManager.close();
+            this.closeEntityManagerFactory();
         }
-
+        return null;
     }
 
+    @Override
+    public List<Customer> listPremiumCustomers() {
+        EntityManager entityManager = emFactory.createEntityManager();
 
-
-    public static void main(String[] args){
-
-        MySQLCustomerJpaDAO mySQLCustomerJpaDAO = new MySQLCustomerJpaDAO();
-
-        Customer customer_s = new StandardCustomer("n", "n", "123", "cs@gmail.com");
-        Customer customer_p = new PremiumCustomer("b", "b", "456", "cp@gmail.com");
-        mySQLCustomerJpaDAO.saveCustomer(customer_s);
-        mySQLCustomerJpaDAO.saveCustomer(customer_p);
-
-        //Customer customerS = mySQLCustomerJpaDAO.getCustomerByEmail("cs@gmail.com");
-        Customer customerP = mySQLCustomerJpaDAO.getCustomerByEmail("cp@gmail.com");
-
-        //System.out.println(customerS);
-        //System.out.println(customerP.customerType());
-
-        List<Customer> allCustomers = mySQLCustomerJpaDAO.getCustomers();
-        System.out.println(allCustomers);
-
-        mySQLCustomerJpaDAO.closeEntityManagerFactory();
-
+        try {
+            Query query = entityManager.createQuery("SELECT c FROM Customer c WHERE type = 2", Customer.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            // Registra o maneja la excepción según tus necesidades
+            System.err.println("Error al obtener la lista de clientes premium: " + e.getMessage());
+        } finally {
+            entityManager.close();
+            this.closeEntityManagerFactory();
+        }
+        return null;
     }
 
+    @Override
+    public List<Customer> listStdCustomers() {
+        EntityManager entityManager = emFactory.createEntityManager();
+
+        try {
+            Query query = entityManager.createQuery("SELECT c FROM Customer c WHERE type = 1", Customer.class);
+            return query.getResultList();
+        }  catch (Exception e) {
+            // Registra o maneja la excepción según tus necesidades
+            System.err.println("Error al obtener la lista de clientes estándar: " + e.getMessage());
+
+        } finally {
+                entityManager.close();
+                this.closeEntityManagerFactory();
+        }
+        return null;
+    }
 }
 
 

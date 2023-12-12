@@ -7,16 +7,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CustomerDAO {
-    void savePremCustomer(String name, String nif, String adress, String email);
 
-    void saveStdCustomer(String name, String nif, String adress, String email);
+    void saveCustomer(Customer customer);
 
-    ArrayList<Customer> listCustomers();
+    List<Customer> listCustomers();
 
-    ArrayList<Customer> listPremiumCustomers();
+    Customer getCustomerByEmail(String email);
 
-    ArrayList<Customer> listStdCustomers();
+    List<Customer> listPremiumCustomers();
+
+    List<Customer> listStdCustomers();
 }

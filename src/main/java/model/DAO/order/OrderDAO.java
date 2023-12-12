@@ -4,23 +4,24 @@ import model.Customer;
 import model.Item;
 import model.Order;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface OrderDAO {
 
-    public void saveOrder(Customer customer, Item item, Order order);
+    void saveOrder(Order order);
 
-    ArrayList<Order> listOrders();
+    List<Order> getOrders();
 
-    public void deleteOrder(String id);
+    List<Order> getPendingOrders();
 
-    public ArrayList<Order> getPendingOrders();
+    List<Order> getPendingOrdersByCustomer(Customer customer);
 
+    List<Order> getSentOrdersByCustomer(Customer customer);
 
-    public ArrayList<Order> getPendingOrdersByCustomer(Customer customer);
+    List<Order> getSentOrders();
 
-    public ArrayList<Order> getSentOrdersByCustomer(Customer customer);
+    Order getOrderById(String code);
 
-    public ArrayList<Order> getSentOrders();
+    void deleteOrder(String id);
 }
 

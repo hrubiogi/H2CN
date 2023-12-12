@@ -2,6 +2,7 @@ package view;
 import controller.Controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -44,7 +45,7 @@ public class GestionOS
                             addItemHandler();
                             break;
                         case '2':
-                            ArrayList<Item> itemList = controller.getData().getItemListDAO();
+                            List<Item> itemList = controller.getData().getItemList();
                             System.out.println("\n<------------Lista de Artículos------------->");
                             System.out.println(itemList);
                             System.out.println("<----------------------------->");
@@ -66,7 +67,7 @@ public class GestionOS
                             addCustomerHandler(null);
                             break;
                         case '2':
-                            ArrayList<Customer> customerList = controller.getData().getCustomerList();
+                            List<Customer> customerList = controller.getData().getCustomerList();
                             if (customerList.isEmpty()) {
                                 System.out.println("\nNo se han encontrado clientes");
                             } else {
@@ -76,7 +77,7 @@ public class GestionOS
                             }
                             break;
                         case '3':
-                            ArrayList<Customer> stdCustomerList = controller.getData().getStdCustomerList();
+                            List<Customer> stdCustomerList = controller.getData().getStdCustomerList();
                             if (stdCustomerList.isEmpty()) {
                                 System.out.println("\nNo se han encontrado clientes estándar");
                             } else {
@@ -86,7 +87,7 @@ public class GestionOS
                             }
                             break;
                         case '4':
-                            ArrayList<Customer> premiumCustomerList = controller.getData().getPremiumCustomerList();
+                            List<Customer> premiumCustomerList = controller.getData().getPremiumCustomerList();
                             if (premiumCustomerList.isEmpty()) {
                                 System.out.println("\nNo se han encontrado clientes premium");
                             } else {
@@ -112,7 +113,7 @@ public class GestionOS
                             addOrderHandler();
                             break;
                         case '2':
-                            ArrayList<Order> pendingOrders = showPendingOrdersHandler();
+                            List<Order> pendingOrders = showPendingOrdersHandler();
                             if (pendingOrders.isEmpty()) {
                                 System.out.println("\nNo se han encontrado pedidos pendientes");
                             } else {
@@ -122,7 +123,7 @@ public class GestionOS
                             }
                             break;
                         case '3':
-                            ArrayList<Order> sentOrders = showSentOrdersHandler();
+                            List<Order> sentOrders = showSentOrdersHandler();
                             if (sentOrders.isEmpty()) {
                                 System.out.println("\nNo se han encontrado pedidos enviados");
                             } else {
@@ -243,7 +244,7 @@ public class GestionOS
             float shippingCost = Float.parseFloat(askField("Introduzca precio de envío de artículo: "));
             int prepTime = Integer.parseInt(askField("Introduzca tiempo de preparación de artículo: "));
             //controller.getData().getItemsList().saveItem(code, description, price, shippingCost, prepTime);
-            controller.getData().getDaoFactory().createItemDAO().saveItem(code, description, price, shippingCost, prepTime);
+            controller.getData().saveItem(code, description, price, shippingCost, prepTime);
 
         } catch (ValueIsEmptyException e) {
             System.out.println(e.getMessage());
@@ -338,38 +339,43 @@ public class GestionOS
 
     void deleteOrderHandler() {
         String id = askField("Introduzca número de identificación del pedido a eliminar: ");
-        controller.getData().deleteOrder(id);
+        boolean orderIsSent = controller.getData().orderIsSent(id);
+        if (orderIsSent) {
+            System.out.println("El pedido ya ha sido enviado y no puede eliminarse");
+        } else {
+            controller.getData().deleteOrder(id);
+        }
     }
 
-    ArrayList<Order> showPendingOrdersHandler() {
+    List<Order> showPendingOrdersHandler() {
         String input;
-        ArrayList<Order> pendingOrders = new ArrayList<>();
+        List<Order> pendingOrders = new ArrayList<>();
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos pendientes o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            pendingOrders = controller.getData().getPendingOrdersListDAO();
+            pendingOrders = controller.getData().getPendingOrdersList();
         } else {
             Customer customer = controller.getData().getCustomerByEmail(input);
-            pendingOrders = controller.getData().getPendingOrdersByCustomerListDAO(customer);
+            pendingOrders = controller.getData().getPendingOrdersByCustomerList(customer);
         }
         return pendingOrders;
     }
 
-    ArrayList<Order> showSentOrdersHandler() {
+    List<Order> showSentOrdersHandler() {
         String input;
-        ArrayList<Order> sentOrders = new ArrayList<>();
+        List<Order> sentOrders = new ArrayList<>();
 
         System.out.println("Introduzca el correo del cliente para mostrar sus pedidos enviados o 0 para mostrarlos todos");
         input = keyboard.nextLine();
 
         if (Objects.equals(input, "0")) {
-            sentOrders = controller.getData().getSentOrdersListDAO();
+            sentOrders = controller.getData().getSentOrdersList();
         } else {
             Customer customer = controller.getData().getCustomerByEmail(input);
             System.out.println(customer);
-            sentOrders = controller.getData().getSentOrdersByCustomerListDAO(customer);
+            sentOrders = controller.getData().getSentOrdersByCustomerList(customer);
         }
         return sentOrders;
     }
