@@ -6,6 +6,7 @@ import utils.DuplicateOrderIdException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -135,6 +136,8 @@ public class Order
         this.date = date;
     }
 
+
+
     /*
      * Este método compara la fecha del pedido con la fecha de comprobación del pedido.
      * Si la fecha actual es mayor a la fecha de creación del pedido más el tiempo de preparación
@@ -166,12 +169,15 @@ public class Order
             return itemShippingCost;
         }
     }
-
+    public String formatDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return date.format(formatter);
+    }
     @Override
     public String toString() {
         boolean isSent = orderIsSent();
 
-        return "<------------Order------------>" + '\n' +
+        return "\n<------------Order------------>" + '\n' +
                 "id: " + id + '\n' +
                 "customer NIF: " + customer.getNif() + '\n' +
                 "customer name: " + customer.getName() + '\n' +
@@ -183,7 +189,7 @@ public class Order
                 "quantity: " + quantity + '\n' +
                 "shippingCost: " + shippingCost() + '\n' +
                 "full price: " + ((item.getPrice() * quantity) + shippingCost()) + '\n' +
-                "date: " + date + '\n' +
+                "date: " + formatDate() + '\n' +
                 "is sent: " + isSent + '\n' +
                 " ----------------------------";
     }
