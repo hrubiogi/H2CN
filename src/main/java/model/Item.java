@@ -1,12 +1,25 @@
 package model;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "items")
 public class Item
 {
     //Fields
+    @Id
     private String code;
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price")
     private float price;
+
+    @Column(name = "shippingCost")
     private float shippingCost;
+
+    @Column(name = "prepTime")
     private int prepTime;
 
 
@@ -63,6 +76,10 @@ public class Item
 
 
     //constructor
+    public Item(){
+
+    }
+
     public Item(String code, String description, float price, float shippingCost, int prepTime)
     {
         this.code = code;

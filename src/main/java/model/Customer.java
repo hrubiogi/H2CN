@@ -1,9 +1,19 @@
 package model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "customers")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 public abstract class Customer {
+    @Column(name = "name")
     private String name;
+    @Column(name = "address")
     private String address;
+    @Column(name = "nif")
     private String nif;
+    @Id
     private String email;
 
     public Customer(String name, String address, String nif, String email)
@@ -12,6 +22,10 @@ public abstract class Customer {
         this.address = address;
         this.nif = nif;
         this.email = email;
+    }
+
+    public Customer() {
+
     }
 
     public String getName()

@@ -1,9 +1,16 @@
 package model;
 
+import javax.persistence.*;
+
+@Entity
+@DiscriminatorValue("1")
 public class StandardCustomer extends Customer
 {
     public StandardCustomer(String name, String address, String nif, String email) {
         super(name, address, nif, email);
+    }
+
+    public StandardCustomer() {
     }
 
     @Override

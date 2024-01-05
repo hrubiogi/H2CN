@@ -10,8 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class MySQLItemDAO implements ItemDAO {
-    @Override
+public class MySQLItemDAO {
+
     public void saveItem(String code, String description, float price, float shippingCost, int prepTime) {
         try (Connection connection = ConnectDB.connect()) {
             if (connection != null) {
@@ -44,7 +44,7 @@ public class MySQLItemDAO implements ItemDAO {
         }
     }
 
-    @Override
+
     public ArrayList<Item> listItems() {
         ArrayList<Item> itemList = new ArrayList<>();
         try (Connection connection = ConnectDB.connect()) {

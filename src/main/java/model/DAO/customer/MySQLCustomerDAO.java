@@ -12,8 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class MySQLCustomerDAO implements CustomerDAO {
-    @Override
+public class MySQLCustomerDAO {
+
     public void savePremCustomer(String name, String address, String nif, String email) {
         try (Connection connection = ConnectDB.connect()) {
             if (connection != null) {
@@ -75,7 +75,7 @@ public class MySQLCustomerDAO implements CustomerDAO {
         }
     }
 
-    @Override
+
     public ArrayList<Customer> listCustomers() {
         ArrayList<Customer> customerList = new ArrayList<Customer>();
         try (Connection connection = ConnectDB.connect()) {
